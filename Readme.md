@@ -1,51 +1,121 @@
-## 정리된 아이디어
+# AI REQURIED LIBRARY
 
-+ 집을 구하는 사용자를 위해 다각도의 시각에서 방을 구체적으로 살펴보게 해주는 서비스
-  + 기술
-    + multiple images -> 3d reconstruction ?
-    + multiple images -> 2.5d reconstruction ?
-+ 이동 주행 로봇 서비스를 통한 실내 공간 매핑 및 이를 이용한 청소?
-  + 기술
-    + ORB-SLAM 알고리즘을 이용
-+ 작곡 서비스 및 악보 연주
-  + 기술
-    + GPT-2 모델을 이용
-+ 집을 구하는 이를 위한 이미지 기반 방 추천 서비스방을 가상화 한 뒤 가구배치 등 인테리어
-  + 기술
-    + image retrieval
-+ 손상된 이미지 복원 및 화질을 높여주는 서비스
-  + 기술
-    + GAN 등등...
-+ Detection, Segmentation, Tracking, Classifying을 이용한 서비스
-  + Classifying
-    + 손동작으로 애플리케이션을 수행하는 서비스
-      + 카카오, 유튜브 등을 실행시켜주는 서비스
-      + 게임을 하는 서비스
-  + Detection
-    + No Idea
-  + Segmentation
-    + 이미지에서 사용자의 선택에 따라 특정 객체를 삭제하고 삭제한 부분을 주위의 배경으로 채워주는 서비스
-  + Tracking
-    + 이미지에서 사람의 동선을 Tracking하고 이를 기록하여 빈도에 따른 광고 공간 추천 서비스
++ cuda 10.1
++ cuda 설치는 notion에 정리해놨어요 
++ conda activate pytorch_env
++ pytorch version  >=1.4 확인
+  + pip show torch
+  + 만약 1.4이상이 아니라면 conda uninstall pytorch
++ conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
++ pip 설치할 때는 꼭 가상환경에서 실행시켜야 합니다!!
+  + pip install nltk
+  + pip install pandas
+  + 
+  + pip install setuptools
+  + pip install mxnet==1.6.0
+  + pip install gluonnlp >=0.8.3
+  + pip install sentencepiece
+  + pip install transformers
 
-## 개인적으로 하고 싶은 프로젝트
+### AI 기능 실행하려면 반드시 실행 시켜야 합니다!
 
-+ 경석:
-  + 임베디드에서 영상 기반 알고리즘을 가속화 하기 위한 방법 탐색 및 수행
-    + 새로운 BackBone 네트워크 구축
-    + 모델 경량화
-      + half precision
-      + Quantization 등등..
-  + 하드웨어 자원을 충분히 사용해서 가속화하는 방법 탐색 및 수행
-    + Gpu를 이용한 가속화
-      + ACL
-      + OpenCL
-    + Cpu를 이용한 가속화
-      + Neon-API
-      + Multi-threads
-    + Cpu , Gpu 파이프라이닝
-+ 창현:
-  + RPA
-  + MES(스마트 팩토리)
-  + GAN Model
-  + ERP, SAP
++ **AI 기능 실행하지 않으려면** 
+  
+  + S02P23C104/Back/Django/main/view.py 에서
+  
+    + **from AI.prediction import predict** **(이부분 주석)**
+  
+      ```PYTHON
+  from .models import Story
+      from .serializers import *
+  import json
+      
+  
+      @api_view(['POST'])
+  @permission_classes([IsAuthenticated, ])
+      def image_upload(request):
+    file_path = ''
+        text = ['test1','test2']
+    image = []
+        file_names = []
+    for _file in request.FILES.getlist('images[]'):
+          request.FILES['images[]'] = _file
+      file_path, file_name, path = uploaded(request.FILES['images[]'])
+          image.append(path)
+      file_names.append(file_name)
+        # text = predict(file_names,MEDIA_ROOT)(이부분 주석)
+  
+        return JsonResponse({'result':'true', 'text':text, 'image':image})
+      ```
+  ```
+  
+  ```
+  
++ conda 환경이라면 
+  
+  + conda actviate pytorch_env
+  
++ cd S02P23C014/Back/
+  
+  + pip install .
+  + 단 python 버전이 3.6 이상이여야 합니다 꼭!
+
+## DJango
+
+```bash
+$ conda activate pytorch_env
+
+$ pip install python
+$ conda install pytorch torchvision
+
+$ pip install djangorestframework-jwt
+$ pip install djangorestframework
+$ pip install django-cors-headers
+$ pip install -U drf-yasg
+```
+
+```bash
+# django 실행
+$ python manage.py runserver  
+
+# DB
+$ python manage.py makemigratinos
+$ python manage.py migrate
+```
+
+
+
+
+
+
+
+
+#  Model information
+
+### Image Captioning model
+
++ **Without Attention**
+  + config: config2020-04-22-00-48-42.json
+  + encoder : encoder2020-04-22-00-48-42.pth
+  + decoder : decoder2020-04-22-00-48-42.pth
+  + loss : 2.1(CrossEntropy)
++ **With Attention** 
+  + 
+
+### KoGPT2 model
+
+
+
+## AI SERVICE
+
++ predict 호출하기전에!!!
++ prediction.py
+  + predict(images,IMAGE_DIRECTORY,AI_DIRECTORY_PATH,model_type)
+    + param 
+      + images : 이미지 배열
+      + IMAGE_DIRECTORY: images가 저장된 디렉토리
+      + AI_DIRECTORY_PATH: AI DIRECTORY path(절대경로)
+      + model_type(string)
+        + "life","story","news"
+    + return
+      + 1가지 이상의 생성된 문장 배열
