@@ -249,7 +249,47 @@ def process_2():
     import torch.nn.functional as F
 
     print(list(model.parameters()))
+
     optimizer = torch.optim.SGD(model.parameters(), lr=0.007)
+    # Learning Rate Scheduler
+    # 학습이 진행되면서 학습률을 상황에 맞게 변경시킬 수 있다면 더 낮은 loss값을 얻을 수 있다.
+    # 이를 위해서는 학습률 스케쥴이 필요하고, 관련 코드는 아래와 같다.
+
+    # 지정한 스텝 단위로 학습률에 감마를 곱해서 학습률을 감소시키는 방식
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.99)
+
+    # 지정한 스텝 지점마다 학습률에 감마를 곱해서 감소시키는 방식
+    scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[100, 400, 1000], gamma=0.1)
+
+    # 매 epoch마다 학습률에 감마를 곱해서 감소시키는 방식
+    scheduler = optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.99)
+
+    # 원하는 epoch마다, 이전 학습률 대비 변경폭에 따라 학습률을 감소시키는 방식
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, threshold=1, patience=1, mode="min")
+
+    """
+    # 의사코드임에 유의한다.
+    # StepLR, MultiStepLR, ExponentialLR 사용방법
+    for i in range(epochs):
+        scheduler.step() # 
+
+        optimizer.zero_grad()
+        output = model.forward(...)
+        loss = loss(...)
+        loss.backward()
+        optimizer.step()
+    
+    # ReduceLROnPlateau 사용방법
+    for i in range(epochs):
+        optimizer.zero_grad()
+        output = model.forward(...)
+        loss = loss(...)
+        loss.backward()
+        optimizer.step()
+
+        scheduler.step()  # 
+    """
+
     nb_epochs = 2000
     for epoch in range(nb_epochs + 1):
 
@@ -302,11 +342,109 @@ def process_3_by_model():
     pass
 
 
+def learning_rate_scheduler():
+    try:
+        train = np.load("../../../datasets/education/linear_train.npy")
+    except Exception as e:
+        print(e)
+        return
+
+    import torch.optim as optim
+    import torch.nn as nn
+    import torch.nn.functional as F
+
+    x_train = train[:, [0]]
+    x_train = torch.FloatTensor(x_train)
+    print(x_train.shape)
+
+    y_train = train[:, [1]]
+    y_train = torch.FloatTensor(y_train)
+    print(y_train.shape)
+
+    model = nn.Linear(1, 1)
+    criterion = nn.MSELoss()
+    print(list(model.parameters()))
+
+    # 학습률
+    # 0.01 : Over shooting
+    # 0.007 : Epoch 2000/2000 W: 15.389, b: 7.833 Cost: 900.938232
+    # 0.005 : Epoch 2000/2000 W: 15.385, b: 7.780 Cost: 900.939209
+    # 0.001 : Epoch 2000/2000 W: 15.141, b: 4.536 Cost: 903.672729
+    # 0.0005 : Epoch 2000/2000 W: 14.981, b: 2.403 Cost: 908.336182
+    # 0.0001 : Epoch 2000/2000 W: 14.781, b: -0.257 Cost: 917.338013
+    # 0.00001 : Epoch 2000/2000 W: 14.657, b: -1.011 Cost: 921.170776
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.007)
+
+    # Learning Rate Scheduler
+    # 학습이 진행되면서 학습률을 상황에 맞게 변경시킬 수 있다면 더 낮은 loss값을 얻을 수 있다.
+    # 이를 위해서는 학습률 스케쥴이 필요하고, 관련 코드는 아래와 같다.
+
+    # 지정한 스텝 단위로 학습률에 감마를 곱해서 학습률을 감소시키는 방식
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.99)
+
+    # 지정한 스텝 지점마다 학습률에 감마를 곱해서 감소시키는 방식
+    # scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[100, 400, 1000], gamma=0.1)
+
+    # 매 epoch마다 학습률에 감마를 곱해서 감소시키는 방식
+    # scheduler = optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.99)
+
+    # 원하는 epoch마다, 이전 학습률 대비 변경폭에 따라 학습률을 감소시키는 방식
+    # scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, threshold=1, patience=1, mode="min")
+
+    """
+    # 의사코드임에 유의한다.
+    # StepLR, MultiStepLR, ExponentialLR 사용방법
+    for i in range(epochs):
+        optimizer.zero_grad()
+        output = model.forward(...)
+        loss = loss(...)
+        loss.backward()
+        optimizer.step()
+        
+        scheduler.step() # 
+
+    # ReduceLROnPlateau 사용방법
+    for i in range(epochs):
+        scheduler.step()  # 
+        
+        optimizer.zero_grad()
+        output = model.forward(...)
+        loss = loss(...)
+        loss.backward()
+        optimizer.step()
+    """
+
+    nb_epochs = 2000
+    for epoch in range(nb_epochs + 1):
+
+        prediction = model(x_train)
+        cost = F.mse_loss(prediction, y_train)
+        optimizer.zero_grad()
+        cost.backward()
+        optimizer.step()
+
+        scheduler.step()
+        # scheduler.step(cost)  # ReduceLROnPlateau
+
+        if epoch % 100 == 0:
+            #
+            print("Epoch {:4d}/{} Cost: {:.6f}".format(
+                epoch, nb_epochs, cost.item()
+            ))
+
+    # model_save(model, "linear_train_model.pt")
+    display_result(criterion, model, x_train, y_train)
+    print(x_train[:5])
+    print(y_train[:5])
+
+
+
 def main():
     # linear_regression_by_pytorch()
     # process_1()
     # process_2()
-    process_3_by_model()
+    # process_3_by_model()
+    learning_rate_scheduler()
     return
 
 
