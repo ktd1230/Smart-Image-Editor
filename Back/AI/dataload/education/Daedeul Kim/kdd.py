@@ -15,8 +15,8 @@ def display_result(criterion, model, x, y):
     loss = criterion(input=pred, target=y)
 
     plt.clf()
-    plt.xlim(0, 11)
-    plt.ylim(0, 8)
+    # plt.xlim(0, 11)
+    # plt.ylim(0, 8)
     plt.scatter(x.data.numpy(), y.data.numpy())
     plt.plot(x.data.numpy(), pred.data.numpy(), "b--")
     plt.title("loss={:.4}, w={:.4}, b={:.4}".format(loss.data.item(), model.weight.data.item(), model.bias.data.item()))
@@ -25,6 +25,10 @@ def display_result(criterion, model, x, y):
 
 def model_save(model, model_name):
     torch.save(obj=model, f=model_name)
+
+
+def model_load(model_name):
+    return torch.load(model_name)
 
 
 def linear_regression_by_pytorch():
@@ -213,7 +217,7 @@ def process_2():
     # 0.0005 : Epoch 2000/2000 W: 14.981, b: 2.403 Cost: 908.336182
     # 0.0001 : Epoch 2000/2000 W: 14.781, b: -0.257 Cost: 917.338013
     # 0.00001 : Epoch 2000/2000 W: 14.657, b: -1.011 Cost: 921.170776
-    optimizer = optim.SGD([W, b], lr=0.00001)
+    optimizer = optim.SGD([W, b], lr=0.007)
 
     optimizer.zero_grad()
     cost.backward()
@@ -234,13 +238,75 @@ def process_2():
             print("Epoch {:4d}/{} W: {:.3f}, b: {:.3f} Cost: {:.6f}".format(
                 epoch, nb_epochs, W.item(), b.item(), cost.item()
             ))
-    return
+
+    # H(x) = 14.65x-1
+    print(W, b)
+
+    import torch.nn as nn
+    model = nn.Linear(1, 1)
+    criterion = nn.MSELoss()
+
+    import torch.nn.functional as F
+
+    print(list(model.parameters()))
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.007)
+    nb_epochs = 2000
+    for epoch in range(nb_epochs + 1):
+
+        pred = model(x_train)
+        cost = F.mse_loss(pred, y_train)
+
+        optimizer.zero_grad()
+        cost.backward()
+        optimizer.step()
+
+        if epoch % 100 == 0:
+            #
+            print("Epoch {:4d}/{} W: {:.3f}, b: {:.3f} Cost: {:.6f}".format(
+                epoch, nb_epochs, W.item(), b.item(), cost.item()
+            ))
+
+    # model_save(model, "linear_train_model.pt")
+    display_result(criterion, model, x_train, y_train)
+    print(x_train[:5])
+    print(y_train[:5])
+
+    # for elem in test_x:
+    #     new_var = torch.FloatTensor([elem])
+    #     pred_y = model(new_var)
+    #     print(pred_y)
+
+    new_x = torch.FloatTensor([test_x]).t()
+    print(new_x[:5])
+    pred_y = model(new_x)
+    print(test_x[:5])
+    print(pred_y[:5])
+    display_result(criterion, model, new_x, pred_y)
+
+
+def process_3_by_model():
+    try:
+        test_x = np.load("../../../datasets/education/linear_test_x.npy")
+        model = model_load("linear_train_model.pt")
+        print(" model: {} \n type: {}".format(model, type(model)))
+    except Exception as e:
+        print(e)
+        return
+
+    import torch.nn as nn
+
+    criterion = nn.MSELoss()
+    new_x = torch.FloatTensor([test_x]).t()
+    pred_y = model(new_x)
+    display_result(criterion, model, new_x, pred_y)
+    pass
 
 
 def main():
     # linear_regression_by_pytorch()
     # process_1()
-    process_2()
+    # process_2()
+    process_3_by_model()
     return
 
 
