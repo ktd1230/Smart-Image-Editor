@@ -16,8 +16,7 @@ test_data = torch.FloatTensor(xdata)
 pred_y = model(test_data)
 xdata = xdata.reshape(-1,)
 pred_y = pred_y.reshape(-1,)
-plt.figure()
-plt.plot(xdata, pred_y)
+plt.plot(xdata.tolist(),pred_y.tolist())
 
 plt.show()
 
