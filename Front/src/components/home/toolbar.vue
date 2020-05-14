@@ -29,6 +29,7 @@
           <v-btn style="color:white;" text v-if="isAuthenticated" @click="switchPage('mybook')">Mybook</v-btn>
           <!-- <v-btn style="color:white;" text @click="switchPage('result')">result</v-btn> -->
           <v-btn style="color:white;" text @click="switchPage('rank')">rank</v-btn>
+          <v-btn style="color:white;" text @click="switchPage('test')">test</v-btn>
           <!-- <v-btn  class="ml-0 hidden-sm-and-down" text>test</v-btn> -->
           <!-- <v-btn  class="ml-0 hidden-sm-and-down" text>test</v-btn> -->
           <v-spacer />
