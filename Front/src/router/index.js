@@ -5,6 +5,7 @@ import Mybook from '../components/home/mybook';
 import Result from '../components/book/result';
 import Rank from '../components/home/rank';
 import Detail from '../components/home/detail';
+import Test from '../components/test/test'
 // import bus from '../utiles/bus.js';
 // import {store} from '../store/index.js';
 
@@ -46,6 +47,11 @@ export default new VueRouter({
     name: 'detail',
     component: Detail,
     props: true,
+  },
+  {
+    path:'/test',
+    name: 'detail',
+    component:Test
   }
 ]
 })
