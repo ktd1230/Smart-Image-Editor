@@ -79,7 +79,7 @@ class FashionMNISTLinear(nn.Module):
         )
 
         self.layer5 = nn.Sequential(
-            torch.nn.Linear(32, 20, bias=True)
+            torch.nn.Linear(32, 10, bias=True)
         )
 
         # Layer 6
