@@ -25,7 +25,7 @@ class Model(nn.Module):
         self.l1 = nn.Linear(784, 256)
         self.l2 = nn.Linear(256, 128)
         self.l3 = nn.Linear(128, 64)
-        self.l4 = nn.Linear(64, 16)
+        self.l4 = nn.Linear(64, 10)
 
     def forward(self, x):
         x = x.view(x.shape[0], -1)
