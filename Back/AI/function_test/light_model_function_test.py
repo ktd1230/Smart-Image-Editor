@@ -180,21 +180,21 @@ def load_model_test():
 def resnet101():
     resnet = models.resnet101(pretrained=True)
     print(resnet)
-    #x = torch.rand(1,3, 300, 400)
-    #out = resnet(x)
-    #print(out)
+    x = torch.rand(1,3, 300, 400)
+    out = resnet(x)
+    print(out)
 
 
 
 
 
 
-grad_test()
+#grad_test()
 #feature_test()
 #hook_test()
 #mask_rcnn_resnet_test()
 
 #load_model_test()
-#resnet101()
+resnet101()
 
 #preresnet_test()

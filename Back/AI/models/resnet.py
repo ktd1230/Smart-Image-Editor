@@ -39,7 +39,7 @@ class ResNet(nn.Module):
     def __init__(self,layers,cfg=None,type="Bottleneck"):
         super(ResNet,self).__init__()
         if cfg == None:
-            cfg = [[64],[64,64,256]*layers[0],[128,128,512]*layers[1],[256,256,1024]*layers[2],[512,512,1024]*layers[3]]
+            cfg = [[64],[64,64,256]*layers[0],[128,128,512]*layers[1],[256,256,1024]*layers[2],[512,512,2048]*layers[3]]
         inplane = cfg[0][0]
         self.initial_layer = self.initial_network(inplane)
         # self.conv1 = nn.Conv2d(3,self.inplanes,kernel_size=7,stride=2,padding=3,bias=False)
@@ -55,6 +55,13 @@ class ResNet(nn.Module):
         inplane = cfg[3][3 * layers[2] - 1]
         self.layer4 = self._make_layer(block, inplane, cfg[4], layers[3], 4)
 
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
+                m.weight.data.normal_(0, math.sqrt(2. / n))
+            elif isinstance(m, nn.BatchNorm2d):
+                m.weight.data.fill_(0.5)
+                m.bias.data.zero_()
 
 
     def initial_network(self,inplane):
@@ -94,8 +101,8 @@ class ResNet(nn.Module):
 
 if __name__  == "__main__":
     cfg = [[32],[27,24,10,5,4,2,1,9,2],[23,23,12,4,6,1,2,6,1],[9,2,3,5,19,2,5,9,10],[1,2,3,4,5,6,7,8,9]]
-    resnet = ResNet([3,3,3,3],cfg=cfg)
+    resnet = ResNet([3,4,23,3])
     print(resnet)
-    x = torch.rand(1,3,50,50)
+    x = torch.rand(1,3,224,224)
     out = resnet(x)
     print(out)
