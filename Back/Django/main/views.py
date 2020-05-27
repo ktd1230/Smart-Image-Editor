@@ -17,16 +17,29 @@ import os, datetime, random
 from PIL import Image
 from django.contrib.auth import get_user_model
 
-from AI.prediction import predict
+# from AI.prediction import predict
 from .models import Story
 from .serializers import *
 import json
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, ])
+def mask_rcnn(request):
+    print(request.data['img'])
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, ])    
+def resolution_up(request):    
+    file_name = request.data['img']
+    #output_file_name = predict(file_name,MEDIA_ROOT,AI_directory_path="/home/ubuntu/s02p23c104/Back/AI",model_type=modeltype)
+    output_file_name = file_name
+    return JsonResponse({'resolution_up':output_file_name})
 def uploaded(f):
     name = str(datetime.datetime.now().strftime('%H%M%S')) + str(random.randint(0, 1000)) + str(f)
     path = default_storage.save(MEDIA_ROOT + '/' + name, ContentFile(f.read()))
     temppath = name
     return os.path.join(MEDIA_ROOT, path), name, temppath
+
 
 
 @api_view(['POST'])
@@ -37,18 +50,18 @@ def image_upload(request, id):
     file_names = []
     text = ['abc','def']
     modeltype = id
-    if id == 1:
-        modeltype = 'life'  # 수필 
-    elif id == 2: 
-        modeltype = 'story'  # 소설 
-    elif id == 3:
-        modeltype = 'news'  # 뉴스
+    # if id == 1:
+    #     modeltype = 'life'  # 수필 
+    # elif id == 2: 
+    #     modeltype = 'story'  # 소설 
+    # elif id == 3:
+    #     modeltype = 'news'  # 뉴스
     for _file in request.FILES.getlist('images[]'):
         request.FILES['images[]'] = _file
         file_path, file_name, path = uploaded(request.FILES['images[]'])
         image.append(path)
         file_names.append(file_name) 
-    text = predict(file_names,MEDIA_ROOT,AI_directory_path="/home/ubuntu/s02p23c104/Back/AI",model_type=modeltype)
+    # text = predict(file_names,MEDIA_ROOT,AI_directory_path="/home/ubuntu/s02p23c104/Back/AI",model_type=modeltype)
     return JsonResponse({'result':'true', 'text':text, 'image':image})
 
 
