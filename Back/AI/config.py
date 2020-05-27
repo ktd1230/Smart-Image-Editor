@@ -92,7 +92,12 @@ develop_config = {
 #     'caption_attention_decoder_path': "/checkpoints/attention_decoder2020-05-01-02-28-24.pth",
 #     'caption_dropout_ratio': 0.5,
 # }
+mask_rcnn_config = {
+    'model_name' : 'checkpoints/lightmodel.pth'
+}
 
+def get_maskrcnn_cfg():
+    return mask_rcnn_config
 def get_config(cfg=None):
     global config
     if cfg is None:        
