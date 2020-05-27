@@ -30,7 +30,7 @@ def updateBn(model,decay_param):
 
 def train(model,epochs,batch):
     train_loader = torch.utils.data.DataLoader(
-        datasets.imagenet(root='datasets/',train=True, download=True,
+        datasets.ImageNet(root='datasets/',train=True, download=True,
                           transform=transforms.Compose([
                               transforms.RandomResizedCrop(224),
                               transforms.RandomHorizontalFlip(),

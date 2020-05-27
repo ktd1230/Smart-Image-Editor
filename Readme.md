@@ -1,72 +1,17 @@
-# AI REQURIED LIBRARY
+## DJango 설정
 
-+ cuda 10.1
-+ cuda 설치는 notion에 정리해놨어요 
-+ conda activate pytorch_env
-+ pytorch version  >=1.4 확인
-  + pip show torch
-  + 만약 1.4이상이 아니라면 conda uninstall pytorch
-+ conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
-+ pip 설치할 때는 꼭 가상환경에서 실행시켜야 합니다!!
-  + pip install nltk
-  + pip install pandas
-  + 
-  + pip install setuptools
-  + pip install mxnet==1.6.0
-  + pip install gluonnlp >=0.8.3
-  + pip install sentencepiece
-  + pip install transformers
-
-### AI 기능 실행하려면 반드시 실행 시켜야 합니다!
-
-+ **AI 기능 실행하지 않으려면** 
-  
-  + S02P23C104/Back/Django/main/view.py 에서
-  
-    + **from AI.prediction import predict** **(이부분 주석)**
-  
-      ```PYTHON
-  from .models import Story
-      from .serializers import *
-  import json
-      
-  
-      @api_view(['POST'])
-  @permission_classes([IsAuthenticated, ])
-      def image_upload(request):
-    file_path = ''
-        text = ['test1','test2']
-    image = []
-        file_names = []
-    for _file in request.FILES.getlist('images[]'):
-          request.FILES['images[]'] = _file
-      file_path, file_name, path = uploaded(request.FILES['images[]'])
-          image.append(path)
-      file_names.append(file_name)
-        # text = predict(file_names,MEDIA_ROOT)(이부분 주석)
-  
-        return JsonResponse({'result':'true', 'text':text, 'image':image})
-      ```
-  ```
-  
-  ```
-  
-+ conda 환경이라면 
-  
-  + conda actviate pytorch_env
-  
-+ cd S02P23C014/Back/
-  
-  + pip install .
-  + 단 python 버전이 3.6 이상이여야 합니다 꼭!
-
-## DJango
+1. visual code로 S02P31C101를 OPEN한다
+2. ctrl + <shift> + p 를 눌러 명령 팔레트를  연다
+3. 명령 팔레트에 Python:Select interpreter를 입력하여  AI를 작업했던 가상환경의 interpreter를 선택한다
+   1. ex) conda의 가상환경 이름이 pytorch_env라면
+   2. Anaconda3/envs/pytorch_env/python.exe를 interpreter로 설정한다
+   3. Python:Select Interpreter가 나오지 않으면 검색을 해서.... 해결하도록
+4. 설정이 끝났으면 visual code의 terminal을 git bash가 아닌 cmd로 설정한다
+5. 아래에 따라 입력한다.
 
 ```bash
-$ conda activate pytorch_env
 
-$ pip install python
-$ conda install pytorch torchvision
+$ conda activate "가상환경이름"
 
 $ pip install djangorestframework-jwt
 $ pip install djangorestframework
@@ -75,12 +20,12 @@ $ pip install -U drf-yasg
 ```
 
 ```bash
-# django 실행
-$ python manage.py runserver  
-
 # DB
 $ python manage.py makemigratinos
 $ python manage.py migrate
+
+# django 실행
+$ python manage.py runserver  
 ```
 
 
@@ -90,32 +35,31 @@ $ python manage.py migrate
 
 
 
-#  Model information
+#  Vue 설정
 
-### Image Captioning model
+1. 먼저 node js를 설치한 적이 없다면 node.js를 먼저 설치한다
 
-+ **Without Attention**
-  + config: config2020-04-22-00-48-42.json
-  + encoder : encoder2020-04-22-00-48-42.pth
-  + decoder : decoder2020-04-22-00-48-42.pth
-  + loss : 2.1(CrossEntropy)
-+ **With Attention** 
-  + 
+2. 터미널에서 다음 명령어를 입력한다
 
-### KoGPT2 model
-
-
+   ```bash
+   $ npm install -g @vue/cli
+   $ cd S02P31C101/Front/
+   $ npm install .
+   $ npm run serve
+   ```
 
 ## AI SERVICE
 
-+ predict 호출하기전에!!!
-+ prediction.py
-  + predict(images,IMAGE_DIRECTORY,AI_DIRECTORY_PATH,model_type)
-    + param 
-      + images : 이미지 배열
-      + IMAGE_DIRECTORY: images가 저장된 디렉토리
-      + AI_DIRECTORY_PATH: AI DIRECTORY path(절대경로)
-      + model_type(string)
-        + "life","story","news"
-    + return
-      + 1가지 이상의 생성된 문장 배열
+1. S02P31C101/Back/Django/main/views.py에 가면 다음 함수들이 있음.
+   1. mask_rcnn
+   2. resolution_up
+   3. inpainting
+2. 각자 해당하는 함수가 동작하는지 확인한다.
+   1. 아쉽게도 동작을 확인하려면 Front,Django 전부다 실행을 시키고 웹에서 버튼을 눌러가며 테스트를 해봐야 한다.
+3. Back에서 AI함수를 호출하는게 안될 것 
+   1. pip install . 을 이용하는 방법이 있고
+   2. 기타 등등이 있을 듯
+   3. 특화 프로젝트 때는 pip install . 을 통해 AI 패키지 자체를 빌드해서 해결했다
+
+
+
