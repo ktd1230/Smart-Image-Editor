@@ -1,10 +1,7 @@
 <template>
   <div>
     <v-container class="grey lighten-5 pa-10">
-      <v-row>
-        <!-- <v-col cols="12" v-for="(item,i) in response.image" :key="i">
-            {{item}}
-        </v-col> -->
+      <v-row>        
         <v-col md="6" xs="12" sm="12" class="pa-0">
           <v-carousel
           height="600"
@@ -32,18 +29,15 @@
                             <v-card-title>{{i+1}}번 객체</v-card-title>
                             <v-img
                                 :src="`${back_server}:8000/media/${item}`"
-                                
-                            >
-                                
-                            </v-img>
-                            <v-card-text class="text--primary">
-                                <div>{{item}}</div>
+                                height="200px"
+                            >                                
+                            </v-img>                                
                                 <v-fade-transition>
                                     <v-overlay v-if="hover" absolute="absolute" color="#036358">
                                         <v-btn @click="select(i)">선택하기</v-btn>
                                     </v-overlay>
                                 </v-fade-transition>
-                            </v-card-text>
+                            
                         </v-card>
                     </v-hover>
                   
@@ -85,9 +79,6 @@
                         </v-card-text>
                     </v-card>
                 </v-col>
-                    
-
-
             </v-row>           
            
             </v-container>
@@ -99,7 +90,7 @@
         <div class="text-center">
             <v-btn class="ma-2" tile color="indigo" dark @click="mask_rcnn">테두리 얻어내기</v-btn>
             <v-btn class="ma-2" tile color="indigo" dark @click="resolution_up">해상도 올리기</v-btn>   
-            <v-btn class="ma-2" tile color="indigo" dark @click="resoultion">a</v-btn>
+            <v-btn class="ma-2" tile color="indigo" dark @click="inpainting">객체 삭제</v-btn>
         </div>
     </v-container>
   </div>
@@ -180,7 +171,15 @@ import { mapGetters } from 'vuex';
                 axios_common.post('/sub3/resolution_up/', {img:this.original_image}, this.requestHeader)
                     .then(response => {
                         console.log("resolution",response.data)
-                        this.original_image = response.data.resolution_up                        
+                        this.display_images[0] = response.data.resolution_up                        
+                    })
+                    .catch(error => console.log(error))
+            },
+            inpainting(){
+                axios_common.post('/sub3/inpainting/', {img:this.original_image,mask:this.mask[this.selectedImage]}, this.requestHeader)
+                    .then(response => {
+                        console.log("inpainting",response.data)
+                        this.display_images[0] = response.data.inpainting                        
                     })
                     .catch(error => console.log(error))
             }
