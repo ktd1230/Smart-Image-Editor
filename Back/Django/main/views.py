@@ -22,6 +22,15 @@ from .models import Story
 from .serializers import *
 import json
 
+
+import sys
+sys.path.append("C:\\s02p31c101\\Back")
+sys.path.append("C:\\s02p31c101\\Back\\AI")
+sys.path.append("C:\\s02p31c101\\Back\\AI\\edsr_library")
+
+from edsr_predict import predict as edsr_prediction
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])
 def mask_rcnn(request):
@@ -29,10 +38,17 @@ def mask_rcnn(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])    
-def resolution_up(request):    
+def resolution_up(request):
+    print("views.py | resolution_up(request)")
     file_name = request.data['img']
+    print("file_name:{}".format(file_name))
+
+    print("MEDIA_ROOT path:{}".format(MEDIA_ROOT))
+    print("file_name type:{}".format(type(file_name)))
+    output_file_name = edsr_prediction(images=file_name, root_path=MEDIA_ROOT)
     #output_file_name = predict(file_name,MEDIA_ROOT,AI_directory_path="/home/ubuntu/s02p23c104/Back/AI",model_type=modeltype)
-    output_file_name = file_name
+    # output_file_name = file_name
+    print("output_file_name:{}".format(output_file_name))
     return JsonResponse({'resolution_up':output_file_name})
 
 @api_view(['POST'])
