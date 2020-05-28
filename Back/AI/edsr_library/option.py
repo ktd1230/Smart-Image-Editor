@@ -25,7 +25,9 @@ parser.add_argument('--dir_data', type=str, default='../dataset',
                     help='dataset directory')
 # parser.add_argument('--dir_demo', type=str, default='../test',
 #                     help='demo image directory')
-parser.add_argument('--dir_demo', type=str, default='./test',
+# parser.add_argument('--dir_demo', type=str, default='./test',
+#                     help='demo image directory')
+parser.add_argument('--dir_demo', type=str, default='C:\\s02p31c101\\Back\\AI\\edsr_library\\test',
                     help='demo image directory')
 parser.add_argument('--data_train', type=str, default='DIV2K',
                     help='train dataset name')
@@ -149,7 +151,8 @@ parser.add_argument('--save_results', action='store_true',
 parser.add_argument('--save_gt', action='store_true',
                     help='save low-resolution and high-resolution images together')
 
-args = parser.parse_args()
+# args = parser.parse_args()
+args, _ = parser.parse_known_args()
 template.set_template(args)
 
 args.scale = list(map(lambda x: int(x), args.scale.split('+')))
@@ -210,7 +213,8 @@ def set_setting_value_edsr(images, root_path):
     args.no_augment = False
     args.optimizer = 'ADAM'
     args.patch_size = 192
-    args.pre_train = '../experiment/edsr_baseline_x2/model/model_best.pt'  # model path
+    # args.pre_train = '../experiment/edsr_baseline_x2/model/model_best.pt'  # model path
+    args.pre_train = "C:\\s02p31c101\\Back\\AI\\experiment\\edsr_baseline_x2\\model\\model_best.pt"
     args.precision = 'single'
     args.print_every = 100
     args.reduction = 16
@@ -234,9 +238,12 @@ def set_setting_value_edsr(images, root_path):
     args.weight_decay = 0
 
     # 정적으로 할당된 변수를 이용하지 않을 때는 아래의 코드를 이용한다.
-    args.image_name_list = images  # ex) print(args.image_name_list) : ["0894x2.png", "0920x2.png"]
+    args.image_name_list = [images]  # ex) print(args.image_name_list) : ["0894x2.png", "0920x2.png"]
     args.dir_demo = root_path  # ex) print(root_path) : "./test"
 
+    print("args.image_name_list:{}".format(args.image_name_list))
+    print("args.dir_demo:{}".format(args.dir_demo))
+
     # 테스트를 위해 아래의 코드를 이용할 수 있다.
-    args.image_name_list = ["0894x2.png", "0920x2.png"]
-    args.dir_demo = "./test"
+    # args.image_name_list = ["0894x2.png", "0920x2.png"]
+    # args.dir_demo = "C:\\s02p31c101\\Back\\AI\\edsr_library\\test"
