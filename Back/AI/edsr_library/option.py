@@ -169,11 +169,12 @@ for arg in vars(args):
         vars(args)[arg] = False
 
 
-def set_setting_value_edsr(images, root_path):
+def set_setting_value_edsr(images, root_path, ai_directory_path):
     # 현재 ai_directory_path 는 매개변수로부터 정의되지 않는다.
     """
     :param images: 이미지 이름을 의미하며 복수개의 이미지 이름(str을 원소로 갖는 list)
     :param root_path: 이미지가 저장된 디렉토리(str)
+    :param ai_directory_path: EDSR model의 경로. model 이름까지 함께 있어야 한다. (*.pt)
     :return: 별도의 return은 존재하지 않음
     """
     args.G0 = 64
@@ -214,7 +215,8 @@ def set_setting_value_edsr(images, root_path):
     args.optimizer = 'ADAM'
     args.patch_size = 192
     # args.pre_train = '../experiment/edsr_baseline_x2/model/model_best.pt'  # model path
-    args.pre_train = "C:\\s02p31c101\\Back\\AI\\experiment\\edsr_baseline_x2\\model\\model_best.pt"
+    # args.pre_train = "C:\\s02p31c101\\Back\\AI\\experiment\\edsr_baseline_x2\\model\\model_best.pt"
+    args.pre_train = ai_directory_path
     args.precision = 'single'
     args.print_every = 100
     args.reduction = 16
