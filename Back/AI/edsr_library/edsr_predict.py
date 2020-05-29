@@ -14,7 +14,7 @@ from trainer import Trainer
 import timeit
 
 
-def predict(images="", root_path="", AI_directory_path="", model_type="EDSR"):
+def predict(images="", root_path="", ai_directory_path="", model_type="EDSR"):
     """
     :param images: image의 이름 (특화 프로젝트 때, 복수의 이미지 파일을 받아서 images로 명명됨)
     :param root_path: image가 저장된 디렉토리
@@ -24,7 +24,7 @@ def predict(images="", root_path="", AI_directory_path="", model_type="EDSR"):
     """
 
     if model_type == "EDSR":
-        set_setting_value_edsr(images, root_path)
+        set_setting_value_edsr(images, root_path, ai_directory_path)
         torch.manual_seed(args.seed)
         checkpoint = utility.checkpoint(args)
         if checkpoint.ok:
@@ -35,6 +35,7 @@ def predict(images="", root_path="", AI_directory_path="", model_type="EDSR"):
             result = t.test()  # return value is saved image path(and image name). list type.
             checkpoint.done()
             return result  # list
+
 
 def main():
     predict()

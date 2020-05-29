@@ -42,12 +42,13 @@ def resolution_up(request):
     print("views.py | resolution_up(request)")
     file_name = request.data['img']
     print("file_name:{}".format(file_name))
-
     print("MEDIA_ROOT path:{}".format(MEDIA_ROOT))
     print("file_name type:{}".format(type(file_name)))
-    output_file_name = edsr_prediction(images=file_name, root_path=MEDIA_ROOT)
-    #output_file_name = predict(file_name,MEDIA_ROOT,AI_directory_path="/home/ubuntu/s02p23c104/Back/AI",model_type=modeltype)
-    # output_file_name = file_name
+    output_file_name = edsr_prediction(
+        images=file_name,
+        root_path=MEDIA_ROOT,
+        ai_directory_path="C:\\s02p31c101\\Back\\AI\\experiment\\edsr_baseline_x2\\model\\model_best.pt"
+    )
     print("output_file_name:{}".format(output_file_name))
     return JsonResponse({'resolution_up':output_file_name})
 
