@@ -34,7 +34,19 @@ def predict(images="", root_path="", ai_directory_path="", model_type="EDSR"):
             t = Trainer(args, loader, _model, _loss, checkpoint)
             result = t.test()  # return value is saved image path(and image name). list type.
             checkpoint.done()
-            return result  # list
+
+            # for file_name in result 형태의 for문 형태는 result의 str원소를 변경할 수 없다.
+            for i in range(len(result)):
+                result[i] = result[i][result[i].rfind("\\") + 1:]
+            return result  # `media` 디렉토리 내부에 존재하는 결과물 파일 이름을 반환
+
+            # # result 값이 변경되지 말아야 하는 경우 아래의 코드를 대신 사용한다.
+            # only_file_name_list = []  # 새로운 반환 리스트 생성
+            # for file_name in result:
+            #     # file_name = file_name[file_name.rfind("\\") + 1:]
+            #     # 위 코드의 경우 참조 형태가 아니므로 file_name의 변경이 result 원소에 영향을 주지 않는다.
+            #     only_file_name_list.append(file_name[file_name.rfind("\\") + 1:])
+            # return only_file_name_list  # `media` 디렉토리 내부에 존재하는 결과물 파일 이름을 반환
 
 
 def main():
