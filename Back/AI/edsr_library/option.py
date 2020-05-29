@@ -222,7 +222,7 @@ def set_setting_value_edsr(images, root_path):
     args.reset = False
     args.resume = 0
     args.rgb_range = 255
-    args.save = 'test'
+    args.save = '.'
     args.save_gt = False
     args.save_models = False
     args.save_results = True
