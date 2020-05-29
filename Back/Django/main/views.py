@@ -24,9 +24,12 @@ import json
 
 
 import sys
-sys.path.append("C:\\s02p31c101\\Back")
-sys.path.append("C:\\s02p31c101\\Back\\AI")
-sys.path.append("C:\\s02p31c101\\Back\\AI\\edsr_library")
+from pathlib import Path
+base_path = Path(__file__).parent.absolute()
+sys.path.append((base_path / "..\\..").resolve().__str__())
+sys.path.append((base_path / "..\\..\\AI").resolve().__str__())
+sys.path.append((base_path / "..\\..\\AI\\edsr_library").resolve().__str__())
+# print("sys.path = {}".format(sys.path))
 
 from edsr_predict import predict as edsr_prediction
 
@@ -43,11 +46,15 @@ def resolution_up(request):
     file_name = request.data['img']
     print("file_name:{}".format(file_name))
     print("MEDIA_ROOT path:{}".format(MEDIA_ROOT))
-    print("file_name type:{}".format(type(file_name)))
+
+    base_path = Path(__file__).parent.absolute()
+    print("base_path : {}".format(base_path))
+    model_path = (base_path / "../../AI/experiment/edsr_baseline_x2/model/model_best.pt").resolve()
+    print("model_path : {} \nmodel_path type : {}".format(model_path, type(model_path)))
     output_file_name = edsr_prediction(
         images=file_name,
         root_path=MEDIA_ROOT,
-        ai_directory_path="C:\\s02p31c101\\Back\\AI\\experiment\\edsr_baseline_x2\\model\\model_best.pt"
+        ai_directory_path=model_path
     )
     print("output_file_name:{}".format(output_file_name))
     return JsonResponse({'resolution_up':output_file_name})
