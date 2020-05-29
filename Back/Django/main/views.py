@@ -22,6 +22,18 @@ from .models import Story
 from .serializers import *
 import json
 
+
+import sys
+from pathlib import Path
+base_path = Path(__file__).parent.absolute()
+sys.path.append((base_path / "..\\..").resolve().__str__())
+sys.path.append((base_path / "..\\..\\AI").resolve().__str__())
+sys.path.append((base_path / "..\\..\\AI\\edsr_library").resolve().__str__())
+# print("sys.path = {}".format(sys.path))
+
+from edsr_predict import predict as edsr_prediction
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])
 def mask_rcnn(request):
@@ -29,10 +41,22 @@ def mask_rcnn(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])    
-def resolution_up(request):    
+def resolution_up(request):
+    print("views.py | resolution_up(request)")
     file_name = request.data['img']
-    #output_file_name = predict(file_name,MEDIA_ROOT,AI_directory_path="/home/ubuntu/s02p23c104/Back/AI",model_type=modeltype)
-    output_file_name = file_name
+    print("file_name:{}".format(file_name))
+    print("MEDIA_ROOT path:{}".format(MEDIA_ROOT))
+
+    base_path = Path(__file__).parent.absolute()
+    print("base_path : {}".format(base_path))
+    model_path = (base_path / "../../AI/experiment/edsr_baseline_x2/model/model_best.pt").resolve()
+    print("model_path : {} \nmodel_path type : {}".format(model_path, type(model_path)))
+    output_file_name = edsr_prediction(
+        images=file_name,
+        root_path=MEDIA_ROOT,
+        ai_directory_path=model_path
+    )
+    print("output_file_name:{}".format(output_file_name))
     return JsonResponse({'resolution_up':output_file_name})
 
 @api_view(['POST'])
