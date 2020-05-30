@@ -21,7 +21,7 @@ $ pip install -U drf-yasg
 
 ```bash
 # DB
-$ python manage.py makemigratinos
+$ python manage.py makemigrations
 $ python manage.py migrate
 
 # django 실행
