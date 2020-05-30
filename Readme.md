@@ -74,3 +74,11 @@ $ python manage.py runserver
       + cd PythonAPI
       + make
 
++ EDSR
+  + numpy
+  + scikit-image
+  + imageio
+  + matplotlib
+  + tqdm
+  + opencv-python
+
