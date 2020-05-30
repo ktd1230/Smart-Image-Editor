@@ -39,7 +39,7 @@ def resolution_up(request):
 @permission_classes([IsAuthenticated, ])
 def inpainting(request):
     original_image = request.data['img']
-    mask = request.data['mask']
+    #mask = request.data['mask']
     #output_file_name = predict(file_name,MEDIA_ROOT,AI_directory_path="/home/ubuntu/s02p23c104/Back/AI",model_type=modeltype)
     output_file_name = original_image
     return JsonResponse({'inpainting':output_file_name})
