@@ -1,10 +1,17 @@
 import torch
 import torch.nn as nn
+import torchvision
 from torchvision import models
+from torchvision.models.detection.backbone_utils import resnet_fpn_backbone,BackboneWithFPN
 import torch.optim as optim
 import math
-
+from models.resnet import ResNet as Myresnet
+from transformers import get_linear_schedule_with_warmup,AdamW
 import numpy as np
+from PIL import Image
+from config import get_light_mask_rcnn_config
+import pickle
+
 
 def feature_test():
     vgg = models.vgg16(pretrained=True)
@@ -184,10 +191,69 @@ def resnet101():
     out = resnet(x)
     print(out)
 
+def maskrcnn():
+    model = resnet_fpn_backbone('resnet101', pretrained=True)
+    fpn = model.fpn
 
+    print(model)
 
+def customMaskRcnn():
+    cfg = [[32], [27, 24, 10, 5, 4, 2, 1, 9, 2], [23, 23, 12, 4, 6, 1, 2, 6, 1], [9, 2, 3, 5, 19, 2, 5, 9, 10],
+           [1, 2, 3, 4, 5, 6, 7, 8, 9]]
+    #backbone =  Myresnet([3,4,23,3])
+    backbone =  Myresnet([3,3,3,3],cfg)
+    return_layers = {'layer1': '0', 'layer2': '1', 'layer3': '2', 'layer4': '3'}
+    #cfg = backbone.cfg
 
+    in_channels_list = []
+    for i in range(1,len(cfg)):
+        layer_size = len(cfg[i])
+        in_channels_list.append(cfg[i][layer_size-1])
+    print(in_channels_list)
+    out_channels = 256
+    backbone = BackboneWithFPN(backbone, return_layers, in_channels_list, out_channels)
+    num_classes = 91
 
+    model = models.detection.MaskRCNN(backbone, num_classes)
+    x = torch.rand(1,3,200,200)
+    model.eval()
+    with torch.no_grad():
+        out = model(x)
+    print(out)
+
+def get_coco_dataset():
+    coco = torchvision.datasets.CocoDetection()
+
+def scheduler_test():
+    epochs = 10
+    learning_rate = 0.01
+    model = models.resnet101(pretrained=True)
+    optimizer = AdamW(model.parameters(), lr=learning_rate, eps=1e-8)
+    num_training_steps = 30 * epochs
+    scheduler = get_linear_schedule_with_warmup(
+        optimizer, num_warmup_steps=10, num_training_steps=num_training_steps
+    )
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    target = torch.tensor([1.])
+    for epoch in range(epochs):
+        for i in range(10):
+            optimizer.zero_grad()
+            optimizer.step()
+            scheduler.step()
+
+def to_tesnsor_test():
+    path = "C:\\Users\\multicampus\\Downloads\\coco_dataset\\train2017\\"
+    name = "000000000009.jpg"
+    image = Image.open(path+name)
+    out = torchvision.transforms.functional.to_tensor(image)
+    print(out)
+
+def coco_evaluator_load():
+    config = get_light_mask_rcnn_config()
+    file_name = config['checkpoints'] + "coco_evaluator_2020-05-30-20-52-55.pkl"
+    with open(file_name,'rb') as f:
+        coco = pickle.load(f)
+    print(coco)
 
 #grad_test()
 #feature_test()
@@ -195,6 +261,12 @@ def resnet101():
 #mask_rcnn_resnet_test()
 
 #load_model_test()
-resnet101()
+#resnet101()
 
 #preresnet_test()
+
+#maskrcnn()
+#customMaskRcnn()
+#scheduler_test()
+#to_tesnsor_test()
+coco_evaluator_load()

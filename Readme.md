@@ -61,5 +61,16 @@ $ python manage.py runserver
    2. 기타 등등이 있을 듯
    3. 특화 프로젝트 때는 pip install . 을 통해 AI 패키지 자체를 빌드해서 해결했다
 
+# REQUIRED
 
++ mask-rcnn training
+  + pycocotools
+    + pip3 install numpy==1.17.4
+    + pip3 install Cython
+    + window :
+      + pip install git+https://github.com/philferriere/cocoapi.git#egg=pycocotools^&subdirectory=PythonAPI
+    + linux:
+      + git clone https://github.com/cocodataset/cocoapi.git
+      + cd PythonAPI
+      + make
 
