@@ -145,7 +145,7 @@ import { mapGetters } from 'vuex';
             select(num){
                 this.selectedImage=num
                 console.log(this.items.text[0])
-                this.content=this.items.text[this.selectedImage]
+                this.display_images[0]=this.masked_images[this.selectedImage]
             },
             back(){
                 this.selectedImage=-1;
@@ -176,6 +176,10 @@ import { mapGetters } from 'vuex';
                     .catch(error => console.log(error))
             },
             inpainting(){
+                if (this.selectedImage == -1){
+                    window.alert("객체를 선택해주세요")
+                    return
+                }
                 axios_common.post('/sub3/inpainting/', {img:this.original_image,mask:this.mask[this.selectedImage]}, this.requestHeader)
                     .then(response => {
                         console.log("inpainting",response.data)
