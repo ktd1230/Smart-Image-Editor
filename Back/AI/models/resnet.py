@@ -40,6 +40,7 @@ class ResNet(nn.Module):
         super(ResNet,self).__init__()
         if cfg == None:
             cfg = [[64],[64,64,256]*layers[0],[128,128,512]*layers[1],[256,256,1024]*layers[2],[512,512,2048]*layers[3]]
+        self.cfg = cfg
         inplane = cfg[0][0]
         self.initial_layer = self.initial_network(inplane)
         # self.conv1 = nn.Conv2d(3,self.inplanes,kernel_size=7,stride=2,padding=3,bias=False)
