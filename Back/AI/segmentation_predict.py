@@ -25,10 +25,11 @@ def apply_mask(image, mask, color, alpha=0.5):
     """
     print(mask)
     for c in range(3):
-        image[c,:, :] = np.where(mask == 255,
+        image[c,:, :] = np.where(mask == 0,
                                   image[c,:, :] *
                                   (1 - alpha) + alpha * color[c] * 255,
-                                  image[c,:, :])
+                                  0)
+
     return image
 
 def image_load(image,image_saved_path):
@@ -83,7 +84,7 @@ def gather_mask_beyond_threshold(output,threshold=0.5):
 
     scores = list(output['scores'].detach().cpu().numpy())
     pred_t = [scores.index(x) for x in scores if x > threshold][-1]
-    masks = (output['masks'] > 0.5).squeeze().detach().cpu().numpy().astype(np.uint8)*255
+    masks = (output['masks'] < 0.5).squeeze().detach().cpu().numpy().astype(np.uint8)*255
     masks = masks[:pred_t + 1]
     return masks
 
