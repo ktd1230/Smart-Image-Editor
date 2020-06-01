@@ -81,4 +81,5 @@ $ python manage.py runserver
   + matplotlib
   + tqdm
   + opencv-python
+  + PIL
 
