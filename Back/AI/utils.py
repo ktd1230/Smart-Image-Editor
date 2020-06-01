@@ -4,9 +4,8 @@ import json
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
-import AI.config as cfg
+import config as cfg
 import torch
-from AI.preprocess.Caption_preprocess import *
 import pickle
 import datetime
 

@@ -1,0 +1,16 @@
+# Initially taken from Github's Python gitignore file
+
+# Image Files
+datasets/
+# model files
+checkpoints/
+test/
+
+#ide setting
+.idea/
+
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class

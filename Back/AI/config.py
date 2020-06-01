@@ -92,7 +92,19 @@ develop_config = {
 #     'caption_attention_decoder_path': "/checkpoints/attention_decoder2020-05-01-02-28-24.pth",
 #     'caption_dropout_ratio': 0.5,
 # }
-
+mask_rcnn_config = {
+    'model_name' : 'checkpoints/lightmodel.pth'
+}
+light_mask_rcnn_config = {
+    'num_warmup_steps' : 1000,
+    'decay_param' : 0.00001,
+    'learning_rate':0.0001,
+    'checkpoints':"C:\\Users\\multicampus\\s02p31c101\\Back\\AI\\checkpoints\\"
+}
+def get_light_mask_rcnn_config():
+    return light_mask_rcnn_config
+def get_maskrcnn_cfg():
+    return mask_rcnn_config
 def get_config(cfg=None):
     global config
     if cfg is None:        
