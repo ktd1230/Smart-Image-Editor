@@ -1,18 +1,26 @@
 import torch
-import PIL
+from PIL import Image
 from torchvision import transforms,models
 from config import get_maskrcnn_cfg
 def image_load(image,image_saved_path):
-    pass
     # Read image using PIL
+    im = Image.open(image_saved_path + "\\" + image)
 
     # transform image to tensor using torchvision.transforms
-
-    # return tensor
+    # imsize = (256, 256)
+    loader = transforms.Compose([
+        # transforms.Resize(imsize),  # 입력 영상 크기를 맞춤
+        transforms.ToTensor()])
+    tensor = loader(im).unsqueeze(0)
+    # print(tensor)
+    # print(tensor.shape)
+    return tensor
 
 def load_model(AI_directory_path=None):
     if AI_directory_path is None:
         return models.detection.maskrcnn_resnet50_fpn(pretrained=True)
+
+
 def save_output(output_name,outputs,image_saved_path):
     # param
     # outputs : tensor list
@@ -24,18 +32,21 @@ def save_output(output_name,outputs,image_saved_path):
 
     # return output_names
 
-def gather_mask_beyond_threshold(outputs,threshold=0.5):
-
+def gather_mask_beyond_threshold(outputs,scores,threshold=0.5):
     reliable_outputs = []
-
     # 신뢰도가 threshold 이상인 객체만 모으기
+    for i in range(0, scores.size(0)):
+        if scores[i] > threshold:
+           reliable_outputs.append(outputs[i])
+    print(reliable_outputs)
+
 
     return reliable_outputs
 
 def get_segment_from_mask(masks,original_image):
     pass
 
-def predict(image_name,image_saved_path,AI_directory_path):
+def predict(image_name,image_saved_path,AI_directory_path="temp"):
 
     # param :
     # image_name : 백에서 넘겨준 file의 이름
@@ -55,16 +66,19 @@ def predict(image_name,image_saved_path,AI_directory_path):
 
 
     # model 수행
-    with torch.no._grad():
+    with torch.no_grad():
         model.eval()
         output = model(image)
 
     masks = None
     # output에서 mask 결과만 모으기
-    #masks = output[?]
+    # output에는 bounding box output, mask output, 등등
+    masks = output[0]["masks"]
+    scores =  output[0]["scores"]
 
     # prediction 결과의 정확도가 threshold 이상인 마스크들만 모으기
-    reliable_masks = gather_mask_beyond_threshold(masks,threshold=0.5)
+    reliable_masks = gather_mask_beyond_threshold(masks,scores,threshold=0.5)
+    return
 
     # 얻어낸 마스크와 원본이미지를 곱해서 특정 객체의 segment 따기
     target_segments = get_segment_from_mask(masks,image)
@@ -79,3 +93,14 @@ def predict(image_name,image_saved_path,AI_directory_path):
     saved_mask_names = save_output(output_name,reliable_masks,image_saved_path)
 
     return saved_segment_names,saved_mask_names
+
+
+
+def main():
+    import os
+    predict("chichi.jpg", os.getcwd() + "\dataload\education\chichi")
+    return
+
+
+if __name__ == "__main__":
+    main()
