@@ -197,11 +197,12 @@ class Places2(torch.utils.data.Dataset):
 
     def __getitem__(self, index):
         gt_img = Image.open(self.paths[index])
+        ori_size = gt_img.size
         gt_img = self.img_transform(gt_img.convert('RGB'))
 
         mask = Image.open(self.mask_paths[random.randint(0, self.N_mask - 1)])
         mask = self.mask_transform(mask.convert('RGB'))
-        return gt_img * mask, mask, gt_img
+        return gt_img * mask, mask, gt_img, ori_size
 
     def __len__(self):
         return len(self.paths)
@@ -246,7 +247,7 @@ def predict(images, masks, root_path, AI_directory_path, model_type="life"):
 
     model.eval()
 
-    image, mask, gt = zip(*[dataset_val[i] for i in range(1)])
+    image, mask, gt, ori_size = zip(*[dataset_val[i] for i in range(1)])
     image = torch.stack(image)
     mask = torch.stack(mask)
     gt = torch.stack(gt)
@@ -259,6 +260,12 @@ def predict(images, masks, root_path, AI_directory_path, model_type="life"):
         torch.cat((unnormalize(image), mask, unnormalize(output),
                    unnormalize(output_comp), unnormalize(gt)), dim=0))
     save_image(unnormalize(output), 'result.jpg')
+
+    img_transform = transforms.Compose([transforms.Resize((ori_size[1], ori_size[0])), transforms.ToTensor()])
+    output = Image.open('result.jpg')
+    output = img_transform(output)
+    save_image(unnormalize(output), 'result.jpg')
+
     return 'result.jpg'
 
 
