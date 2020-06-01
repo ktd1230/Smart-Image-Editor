@@ -98,7 +98,7 @@ def predict(image_name,image_saved_path,AI_directory_path="temp"):
 
 def main():
     import os
-    predict("chichi.jpg", os.getcwd() + "\dataload")
+    predict("chichi.jpg", os.getcwd() + "\dataload\education\chichi")
     return
 
 
