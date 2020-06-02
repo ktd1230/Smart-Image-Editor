@@ -15,6 +15,7 @@ import timeit
 
 from PIL import Image
 import numpy as np
+from math import floor
 
 
 def png_alpha_channel_remove(image_name, root_path):
@@ -36,6 +37,23 @@ def png_alpha_channel_remove(image_name, root_path):
         # print("done")
         img.save(image_full_path + image_name)
         img.close()
+
+
+def downscale_by_ratio(image_name, root_path, ratio, method=Image.BICUBIC):
+    """
+    :param image_name: image의 이름
+    :param root_path: image가 저장된 디렉토리
+    :return: 별도의 반환 데이터는 존재하지 않으나 ratio 비율로 축소한 이미지를 저장한다.
+    """
+    if ratio == 1:
+        return
+    image_full_path = root_path + "\\"
+    img = Image.open(image_full_path + image_name)
+    width, height = img.size
+    width, height = floor(width / ratio), floor(height / ratio)
+    # print("width:{}, height:{}".format(width, height))
+    img.resize((width, height), method).save(image_full_path + image_name)
+    img.close()
 
 
 def predict(images="", root_path="", ai_directory_path="", model_type="EDSR"):
