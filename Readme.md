@@ -90,6 +90,8 @@ $ python manage.py runserver
 # Install torch
 conda install pytorch=0.4.1 torchvision cuda91 -c pytorch
 
+pytorch는 반드시 저 버전으로 설치할 것 이후 버전은 내장 함수, 클래스를 변경하여 작동이 안됨....
+
 # Install image libraries
 conda install scikit-image cython
 
