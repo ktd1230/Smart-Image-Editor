@@ -13,10 +13,17 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 # import torchvision.models as models
 # import torchvision.transforms as transforms
 
+
 import os, datetime, random
 from PIL import Image
 from django.contrib.auth import get_user_model
 
+# 여기 고쳐야됨...
+import sys
+
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(__file__)))))+"/AI/prosr_library/")
+
+import prosr_test
 # from AI.prediction import predict
 from .models import Story
 from .serializers import *
@@ -38,6 +45,18 @@ from edsr_predict import predict as edsr_prediction
 @permission_classes([IsAuthenticated, ])
 def mask_rcnn(request):
     print(request.data['img'])
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, ])    
+def resolution_up_prosr(request):
+    print("views.py | resolution_up(request)")
+    file_name = request.data['img']
+    #output_file_name = predict(file_name,MEDIA_ROOT,AI_directory_path="/home/ubuntu/s02p23c104/Back/AI",model_type=modeltype)
+    output_file_name = prosr_test.change(file_name,MEDIA_ROOT)
+    print("결과@@@@@@",output_file_name)
+    output_file_name = file_name
+    return JsonResponse({'resolution_up':output_file_name})
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])    

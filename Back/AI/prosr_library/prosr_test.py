@@ -9,20 +9,21 @@ import os
 import time
 import os.path as osp
 import prosr
+import cv2
 import skimage.io as io
 import torch
-
+from settings import MODEL_ROOT,OUTPUT_ROOT 
 # img_name은 확장자까지 필요..jpg, png 등
 
-def test(img_name):
-    model_path = "data/checkpoints/proSR_x2.pth"
-    input_path = ["data/" + img_name]
+def change(img_name,img_path):
+    model_path = os.path.join(MODEL_ROOT, "proSR_x2.pth")
+    input_path = [img_path +'/'+ img_name]
     target_path = []
     scale = [2, 4, 8]
     scale_idx = 0
     downscale = False
-    output_dir = 'data/output'
-    max_dimension = 0,
+    output_dir = OUTPUT_ROOT
+    max_dimension = 0
     padding = 0
     useCPU = False
     # cuda
@@ -106,8 +107,18 @@ def test(img_name):
             # 출력
             fn = osp.join(output_dir, osp.basename(data['input_fn'][0]))
             io.imsave(fn, sr_img)
+            ir = io.imread(fn)
+            w , h, s = ir.shape
+            nw=int(w/2)
+            nh=int(h/2)
+            resize_img = cv2.resize(ir, (0, 0),fx=0.5,fy=0.5, interpolation=cv2.INTER_AREA)
+            io.imsave(fn,resize_img)
+
 
         if len(target_path):
             psnr_mean /= len(dataset)
             ssim_mean /= len(dataset)
             print_evaluation("average", psnr_mean, ssim_mean)
+        return osp.basename(data['input_fn'][0])
+# if __name__ == '__main__':
+#     change('waterfall.jpg')
