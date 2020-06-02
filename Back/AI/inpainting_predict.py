@@ -188,11 +188,11 @@ class Places2(torch.utils.data.Dataset):
             print(i)
             print(image)
             print(self.paths)
-            self.paths.append('{:s}/{:s}.jpg'.format(img_root, image))
+            self.paths.append('{:s}/{:s}'.format(img_root, image))
         print(self.paths)
         print(img_root)
         for i, mask in enumerate(mask_names):
-            self.mask_paths.append('{:s}/{:s}.jpg'.format(img_root, mask))
+            self.mask_paths.append('{:s}/{:s}'.format(img_root, mask))
         self.N_mask = len(self.mask_paths)
 
     def __getitem__(self, index):
@@ -208,6 +208,7 @@ class Places2(torch.utils.data.Dataset):
         return len(self.paths)
 
 def load_ckpt(ckpt_name, models, optimizers=None):
+    print(ckpt_name)
     ckpt_dict = torch.load(ckpt_name)
     for prefix, model in models:
         assert isinstance(model, nn.Module)
@@ -225,12 +226,16 @@ def unnormalize(x):
     x = x * torch.Tensor(STD) + torch.Tensor(MEAN)
     x = x.transpose(1, 3)
     return x
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 
 def predict(images, masks, root_path, AI_directory_path, model_type="life"):
     parser = argparse.ArgumentParser()
     parser.add_argument('--mask_root', type=str, default='./mask')
+    print(masks)
+    print(BASE_DIR)
 
-    args = parser.parse_args()
+    # args = parser.parse_args()
 
     device = torch.device('cuda')
 
@@ -250,6 +255,7 @@ def predict(images, masks, root_path, AI_directory_path, model_type="life"):
     image, mask, gt, ori_size = zip(*[dataset_val[i] for i in range(1)])
     image = torch.stack(image)
     mask = torch.stack(mask)
+    ori_size = ori_size[0]
     gt = torch.stack(gt)
     with torch.no_grad():
         output, _ = model(image.to(device), mask.to(device))
@@ -259,12 +265,13 @@ def predict(images, masks, root_path, AI_directory_path, model_type="life"):
     grid = make_grid(
         torch.cat((unnormalize(image), mask, unnormalize(output),
                    unnormalize(output_comp), unnormalize(gt)), dim=0))
-    save_image(unnormalize(output), 'result.jpg')
-
+    save_image(unnormalize(output), BASE_DIR + '\\Django\\media\\result.jpg')
+    print(ori_size)
     img_transform = transforms.Compose([transforms.Resize((ori_size[1], ori_size[0])), transforms.ToTensor()])
-    output = Image.open('result.jpg')
+    output = Image.open(BASE_DIR + '\\Django\\media\\result.jpg')
+    print(output)
     output = img_transform(output)
-    save_image(unnormalize(output), 'result.jpg')
+    save_image(output, BASE_DIR + '\\Django\\media\\result.jpg')
 
     return 'result.jpg'
 

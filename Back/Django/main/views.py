@@ -29,10 +29,12 @@ base_path = Path(__file__).parent.absolute()
 sys.path.append((base_path / "..\\..").resolve().__str__())
 sys.path.append((base_path / "..\\..\\AI").resolve().__str__())
 sys.path.append((base_path / "..\\..\\AI\\edsr_library").resolve().__str__())
+sys.path.append((base_path / "..\\..\\AI\\inpainting_predict.py").resolve().__str__())
 # print("sys.path = {}".format(sys.path))
 
 from edsr_predict import predict as edsr_prediction
 
+# import sys.path[10]
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])
@@ -59,13 +61,19 @@ def resolution_up(request):
     print("output_file_name:{}".format(output_file_name))
     return JsonResponse({'resolution_up':output_file_name})
 
+# from sys.path[8] import inpainting_predict
+from inpainting_predict import predict as inpainting_predict
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])
 def inpainting(request):
+    print('아아아아아아아아앙아아아김태동')
     original_image = request.data['img']
-    #mask = request.data['mask']
-    #output_file_name = predict(file_name,MEDIA_ROOT,AI_directory_path="/home/ubuntu/s02p23c104/Back/AI",model_type=modeltype)
-    output_file_name = original_image
+    # mask = request.data['mask']
+    print(sys.path)
+    output_file_name = inpainting_predict([original_image], ["우산제거.jpg"],  MEDIA_ROOT, AI_directory_path="C:\\Project3\\s02p31c101\\Back\\AI\\inpainting_model.pth", model_type="")
+    # output_file_name = predict(file_name,MEDIA_ROOT,AI_directory_path="/home/ubuntu/s02p23c104/Back/AI",model_type=modeltype)
+    # output_file_name = original_image
     return JsonResponse({'inpainting':output_file_name})
 
 
