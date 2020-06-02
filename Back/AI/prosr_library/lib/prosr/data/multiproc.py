@@ -1,14 +1,14 @@
 import torch
 import torch.multiprocessing as multiprocessing
-from torch.utils.data.dataloader import (_DataLoaderIter, DataLoader,
-    _worker_manager_loop, _set_SIGCHLD_handler, ExceptionWrapper,
-    pin_memory_batch)
-from torch._C import (_set_worker_signal_handlers, _update_worker_pids,
+from torch.utils.data.dataloader import (_BaseDataLoaderIter, DataLoader)
+from torch._C import (_set_worker_signal_handlers, _set_worker_pids,
     _remove_worker_pids, _error_if_any_worker_fails)
 import random
 import threading
 import sys
-
+from torch._utils import ExceptionWrapper
+from torch.utils.data._utils.pin_memory import _pin_memory_loop, pin_memory
+from torch.utils.data._utils.signal_handling import _set_SIGCHLD_handler
 """
 A hacky way to schedule different scales with dataset.get()
 """
@@ -55,7 +55,7 @@ def _worker_loop(dataset, index_queue, data_queue, collate_fn, seed, init_fn, wo
             del samples
 
 
-class MyDataLoaderIter(_DataLoaderIter):
+class MyDataLoaderIter(_BaseDataLoaderIter):
     "Iterates once over the DataLoader's dataset, as specified by the sampler"
 
     def __init__(self, loader):
@@ -100,9 +100,8 @@ class MyDataLoaderIter(_DataLoaderIter):
                     # do not initialize cuda context if not necessary
                     maybe_device_id = None
                 self.worker_manager_thread = threading.Thread(
-                    target=_worker_manager_loop,
-                    args=(self.worker_result_queue, self.data_queue, self.done_event, self.pin_memory,
-                          maybe_device_id))
+                    target=_pin_memory_loop,
+                    args=(self.worker_result_queue, self.data_queue, maybe_device_id, self.done_event))
                 self.worker_manager_thread.daemon = True
                 self.worker_manager_thread.start()
             else:
@@ -129,7 +128,7 @@ class MyDataLoaderIter(_DataLoaderIter):
                 random_var = random.choice(self.random_vars)
             batch = self.collate_fn([self.dataset.get(i, random_var) for i in indices])
             if self.pin_memory:
-                batch = pin_memory_batch(batch)
+                batch = pin_memory(batch)
             return batch
 
         # check if the next sample has already been generated
