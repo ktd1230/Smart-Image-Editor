@@ -1,5 +1,6 @@
 import argparse
 import template
+from pathlib import Path
 
 parser = argparse.ArgumentParser(description='EDSR and MDSR')
 
@@ -19,13 +20,11 @@ parser.add_argument('--seed', type=int, default=1,
                     help='random seed')
 
 # Data specifications
-# parser.add_argument('--dir_data', type=str, default='../../../dataset',
-#                     help='dataset directory')
 parser.add_argument('--dir_data', type=str, default='../dataset',
                     help='dataset directory')
-# parser.add_argument('--dir_demo', type=str, default='../test',
-#                     help='demo image directory')
-parser.add_argument('--dir_demo', type=str, default='./test',
+parser.add_argument('--dir_demo',
+                    type=str,
+                    default=(Path(__file__).parent.absolute() / "..\\..\\Django\\media").resolve().__str__(),
                     help='demo image directory')
 parser.add_argument('--data_train', type=str, default='DIV2K',
                     help='train dataset name')
@@ -149,7 +148,8 @@ parser.add_argument('--save_results', action='store_true',
 parser.add_argument('--save_gt', action='store_true',
                     help='save low-resolution and high-resolution images together')
 
-args = parser.parse_args()
+# args = parser.parse_args()
+args, _ = parser.parse_known_args()
 template.set_template(args)
 
 args.scale = list(map(lambda x: int(x), args.scale.split('+')))
@@ -166,11 +166,12 @@ for arg in vars(args):
         vars(args)[arg] = False
 
 
-def set_setting_value_edsr(images, root_path):
+def set_setting_value_edsr(images, root_path, ai_directory_path):
     # 현재 ai_directory_path 는 매개변수로부터 정의되지 않는다.
     """
     :param images: 이미지 이름을 의미하며 복수개의 이미지 이름(str을 원소로 갖는 list)
     :param root_path: 이미지가 저장된 디렉토리(str)
+    :param ai_directory_path: EDSR model의 경로. model 이름까지 함께 있어야 한다. (*.pt)
     :return: 별도의 return은 존재하지 않음
     """
     args.G0 = 64
@@ -210,7 +211,9 @@ def set_setting_value_edsr(images, root_path):
     args.no_augment = False
     args.optimizer = 'ADAM'
     args.patch_size = 192
-    args.pre_train = '../experiment/edsr_baseline_x2/model/model_best.pt'  # model path
+    # args.pre_train = '../experiment/edsr_baseline_x2/model/model_best.pt'  # model path
+    # args.pre_train = "C:\\s02p31c101\\Back\\AI\\experiment\\edsr_baseline_x2\\model\\model_best.pt"
+    args.pre_train = ai_directory_path
     args.precision = 'single'
     args.print_every = 100
     args.reduction = 16
@@ -218,7 +221,7 @@ def set_setting_value_edsr(images, root_path):
     args.reset = False
     args.resume = 0
     args.rgb_range = 255
-    args.save = 'test'
+    args.save = '.'
     args.save_gt = False
     args.save_models = False
     args.save_results = True
@@ -234,9 +237,12 @@ def set_setting_value_edsr(images, root_path):
     args.weight_decay = 0
 
     # 정적으로 할당된 변수를 이용하지 않을 때는 아래의 코드를 이용한다.
-    args.image_name_list = images  # ex) print(args.image_name_list) : ["0894x2.png", "0920x2.png"]
+    args.image_name_list = [images]  # ex) print(args.image_name_list) : ["0894x2.png", "0920x2.png"]
     args.dir_demo = root_path  # ex) print(root_path) : "./test"
 
+    print("args.image_name_list:{}".format(args.image_name_list))
+    print("args.dir_demo:{}".format(args.dir_demo))
+
     # 테스트를 위해 아래의 코드를 이용할 수 있다.
-    args.image_name_list = ["0894x2.png", "0920x2.png"]
-    args.dir_demo = "./test"
+    # args.image_name_list = ["0894x2.png", "0920x2.png"]
+    # args.dir_demo = "C:\\s02p31c101\\Back\\AI\\edsr_library\\test"
