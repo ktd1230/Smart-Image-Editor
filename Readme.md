@@ -83,3 +83,23 @@ $ python manage.py runserver
   + opencv-python
   + PIL
 
+# ProSR 설정
+
+환경은 반드시 Python 3.8 이전 버전 사용할 것
+
+# Install torch
+conda install pytorch=0.4.1 torchvision cuda91 -c pytorch
+
+# Install image libraries
+conda install scikit-image cython
+
+# Install visdom
+conda install visdom dominate -c conda-forge
+
+# Install python dependencies
+python3.7 -m pip install easydict pillow
+
+Search Path
+export PYTHONPATH=$PROJECT_ROOT/lib:$PYTHONPATH to include proSR into the search path.
+
+Window일경우 제어판- 시스템- 환경변수에서 PYTHONPATH 이름 지정해주고 경로 설정 해주면 됨
