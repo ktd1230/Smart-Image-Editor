@@ -166,12 +166,12 @@ for arg in vars(args):
         vars(args)[arg] = False
 
 
-def set_setting_value_edsr(images, root_path, ai_directory_path):
-    # 현재 ai_directory_path 는 매개변수로부터 정의되지 않는다.
+def set_setting_value_edsr(images, root_path, ai_directory_path, use_cpu=False):
     """
     :param images: 이미지 이름을 의미하며 복수개의 이미지 이름(str을 원소로 갖는 list)
     :param root_path: 이미지가 저장된 디렉토리(str)
     :param ai_directory_path: EDSR model의 경로. model 이름까지 함께 있어야 한다. (*.pt)
+    :param use_cpu: EDSR을 수행할 때 CPU 사용 여부. (False 값일 때 GPU를 사용한다.)
     :return: 별도의 return은 존재하지 않음
     """
     args.G0 = 64
@@ -181,7 +181,7 @@ def set_setting_value_edsr(images, root_path, ai_directory_path):
     args.batch_size = 16
     args.betas = (0.9, 0.999)
     args.chop = False
-    args.cpu = False
+    args.cpu = use_cpu
     args.data_range = '1-800/801-810'
     args.data_test = ['Demo']
     args.data_train = ['DIV2K']

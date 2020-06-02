@@ -66,7 +66,7 @@ def predict(images="", root_path="", ai_directory_path="", model_type="EDSR"):
     """
     if model_type == "EDSR":
         png_alpha_channel_remove(images, root_path)
-        set_setting_value_edsr(images, root_path, ai_directory_path)
+        set_setting_value_edsr(images, root_path, ai_directory_path, use_cpu=False)
         torch.manual_seed(args.seed)
         checkpoint = utility.checkpoint(args)
         if checkpoint.ok:
