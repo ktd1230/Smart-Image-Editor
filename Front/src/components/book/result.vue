@@ -89,7 +89,8 @@
     <v-container>
         <div class="text-center">
             <v-btn class="ma-2" tile color="indigo" dark @click="mask_rcnn">테두리 얻어내기</v-btn>
-            <v-btn class="ma-2" tile color="indigo" dark @click="resolution_up">해상도 올리기</v-btn>   
+            <v-btn class="ma-2" tile color="indigo" dark @click="resolution_up_edsr">해상도 올리기(edsr)</v-btn>   
+            <v-btn class="ma-2" tile color="indigo" dark @click="resolution_up_prsr">해상도 올리기(prosr)</v-btn>   
             <v-btn class="ma-2" tile color="indigo" dark @click="inpainting">객체 삭제</v-btn>
         </div>
     </v-container>
@@ -167,11 +168,23 @@ import { mapGetters } from 'vuex';
                     })
                     .catch(error => console.log(error))
             },
-            resolution_up(){
-                axios_common.post('/sub3/resolution_up/', {img:this.original_image}, this.requestHeader)
+            resolution_up_edsr(){
+                axios_common.post('/sub3/resolution_up_edsr/', {img:this.original_image}, this.requestHeader)
                     .then(response => {
-                        console.log("resolution",response.data)
-                        this.display_images[0] = response.data.resolution_up                        
+                        console.log("resolution",response.data.resolution_up)
+                        this.display_images[0] = response.data.resolution_up[0]
+                        console.log("this.display_images[0]",this.display_images[0])
+                        console.log("this.display_images",this.display_images)
+                    })
+                    .catch(error => console.log(error))
+            },
+            resolution_up_prsr(){
+                axios_common.post('/sub3/resolution_up_prosr/', {img:this.original_image}, this.requestHeader)
+                    .then(response => {
+                        console.log("resolution",response.data.resolution_up)
+                        this.display_images[0] = response.data.resolution_up[0]
+                        console.log("this.display_images[0]",this.display_images[0])
+                        console.log("this.display_images",this.display_images)
                     })
                     .catch(error => console.log(error))
             },
