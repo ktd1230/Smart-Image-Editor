@@ -41,7 +41,7 @@ def mask_rcnn(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])    
-def resolution_up(request):
+def resolution_up_edsr(request):
     print("views.py | resolution_up(request)")
     file_name = request.data['img']
     print("file_name:{}".format(file_name))
@@ -58,6 +58,9 @@ def resolution_up(request):
     )
     print("output_file_name:{}".format(output_file_name))
     return JsonResponse({'resolution_up':output_file_name})
+
+def resolution_up_prosr(request):
+    pass
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])
