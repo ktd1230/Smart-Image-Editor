@@ -7,13 +7,7 @@
         :class="{ dragging: isDragging }">
         
         <div class="upload-control" v-show="images.length">
-            <div class="d-flex justify-content-end">
-                <input v-model="typeId" type="radio" id="life" name="type" value="1" checked="checked">
-                <label for="life">수필</label><br>
-                <input v-model="typeId" type="radio" id="story" name="type" value="2">
-                <label for="story">소설</label><br>
-                <input v-model="typeId" type="radio" id="news" name="type" value="3">
-                <label for="news">뉴스</label>
+            <div class="d-flex justify-content-end">                
                 <label class="ml-8" for="file">Select a file</label>
                 <button @click="upload(typeId);">Upload</button>
             </div>
