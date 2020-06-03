@@ -18,36 +18,16 @@ import os, datetime, random
 from PIL import Image
 from django.contrib.auth import get_user_model
 
-# 여기 고쳐야됨...
-import sys
-
-sys.path.append(
-    os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(__file__)))))
-    + "/AI/prosr_library/"
-)
-
 import prosr_test
 from .models import Story
 from .serializers import *
 import json
 
-
-import sys
 from pathlib import Path
-
 base_path = Path(__file__).parent.absolute()
-sys.path.append((base_path / "..\\..").resolve().__str__())
-sys.path.append((base_path / "..\\..\\AI").resolve().__str__())
-sys.path.append((base_path / "..\\..\\AI\\edsr_library").resolve().__str__())
-sys.path.append((base_path / "..\\..\\AI\\inpainting_library").resolve().__str__())
-# print("sys.path = {}".format(sys.path))
-
 from edsr_predict import predict as edsr_prediction
 # from edsr_predict import downscale_by_ratio
-
 from inpainting_predict import predict as inpainting_predict
-
-# import sys.path[10]
 from segmentation_predict import predict as mask_rcnn_prediction
 
 

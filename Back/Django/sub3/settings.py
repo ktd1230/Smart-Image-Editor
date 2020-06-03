@@ -11,7 +11,19 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import datetime 
+import datetime
+import sys
+from pathlib import Path
+
+base_path = Path(__file__).parent.absolute()
+sys.path.append((base_path / "../..").resolve().__str__())
+sys.path.append((base_path / "../../AI").resolve().__str__())
+sys.path.append((base_path / "../../AI/edsr_library").resolve().__str__())
+sys.path.append((base_path / "../../AI/prosr_library").resolve().__str__())
+sys.path.append((base_path / "../../AI/prosr_library/lib").resolve().__str__())
+sys.path.append((base_path / "../../AI/inpainting_library").resolve().__str__())
+# print("sys.path = {}".format(sys.path))
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
