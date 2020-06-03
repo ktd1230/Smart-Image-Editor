@@ -25,21 +25,31 @@
             class="overflow-y-auto overflow-x-hidden pl-3"
           >
             <v-row>
-              <v-col cols="12" v-for="(item,i) in masked_images" :key="i">
-                <v-hover v-slot:default="{ hover }">
-                  <v-card class="sampletext" max-width="95%" v-if="selectedImage === -1">
-                    <v-card-title>{{i+1}}번 객체</v-card-title>
-                    <v-img :src="`${back_server}:8000/media/${item}`" height="200px"></v-img>
-                    <v-fade-transition>
-                      <v-overlay v-if="hover" absolute="absolute" color="#036358">
-                        <v-btn @click="select(i)">선택하기</v-btn>
-                        <v-btn @click="save_mask(i)">저장하기</v-btn>
-                      </v-overlay>
-                    </v-fade-transition>
-                  </v-card>
-                </v-hover>
-              </v-col>
-              <!-- <v-col cols="12" v-if="selectedImage >= 0">
+                <v-col cols="12" v-for="(item,i) in masked_images" :key="i">
+                    <v-hover v-slot:default="{ hover }">
+                        <v-card class="sampletext" max-width = 95%>
+                            <v-card-title>{{i+1}}번 객체</v-card-title>
+                            <v-img
+                                :src="`${back_server}:8000/media/${item}`"
+                                height="200px"
+                            >                                
+                            </v-img>
+                                <!-- <v-fade-transition> -->
+                                    <v-overlay v-if="!selected[i] && hover" absolute="absolute" color="#036358">
+                                        <v-btn @click="select(i)">선택하기</v-btn>
+                                        <v-btn @click="save_mask(i)">저장하기</v-btn>
+                                    </v-overlay>
+                                    <v-overlay v-if="selected[i]" absolute="absolute" color="#036358">
+                                        <!-- <v-btn @click="select(i)">선택하기</v-btn> -->
+                                        
+                                    </v-overlay>
+                                <!-- </v-fade-transition> -->
+                            
+                        </v-card>
+                    </v-hover>
+                  
+                </v-col>
+                <!-- <v-col cols="12" v-if="selectedImage >= 0">
                     <v-card class="sampletext" max-width = 95%
                     data-aos="fade-down"
                     data-aos-duration="3000"
@@ -129,6 +139,7 @@ export default {
   },
   data() {
     return {
+      selected: [],
       dialog: false,
       overlay: false,
       selectedImage: -1,
@@ -146,6 +157,9 @@ export default {
   },
   methods: {
     select(num) {
+        this.selectedImage=num
+        this.selected.splice(0, this.selected.length, false)
+        this.selected[num] = true
       console.log("event.target", event.target);
       this.selectedImage = num;
       //this.display_images[0]=this.masked_images[this.selectedImage]
@@ -242,10 +256,10 @@ export default {
         .catch(error => console.log(error));
     },
     inpainting() {
-      // if (this.selectedImage == -1){
-      //     window.alert("객체를 선택해주세요")
-      //     return
-      // }
+      if (this.selectedImage == -1){
+          window.alert("객체를 선택해주세요")
+          return
+      }
       bus.$emit("start:loading");
       console.log(
         "this.mask[this.selectedImage]",
