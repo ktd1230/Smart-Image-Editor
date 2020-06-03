@@ -25,18 +25,23 @@
             <v-row>
                 <v-col cols="12" v-for="(item,i) in masked_images" :key="i">
                     <v-hover v-slot:default="{ hover }">
-                        <v-card class="sampletext" max-width = 95% v-if="selectedImage === -1">
+                        <v-card class="sampletext" max-width = 95%>
                             <v-card-title>{{i+1}}번 객체</v-card-title>
                             <v-img
                                 :src="`${back_server}:8000/media/${item}`"
                                 height="200px"
                             >                                
                             </v-img>
-                                <v-fade-transition>
-                                    <v-overlay v-if="hover" absolute="absolute" color="#036358">
+                                <!-- <v-fade-transition> -->
+                                    <v-overlay v-if="!selected[i] && hover" absolute="absolute" color="#036358">
                                         <v-btn @click="select(i)">선택하기</v-btn>
+                                        
                                     </v-overlay>
-                                </v-fade-transition>
+                                    <v-overlay v-if="selected[i]" absolute="absolute" color="#036358">
+                                        <!-- <v-btn @click="select(i)">선택하기</v-btn> -->
+                                        
+                                    </v-overlay>
+                                <!-- </v-fade-transition> -->
                             
                         </v-card>
                     </v-hover>
@@ -127,6 +132,7 @@ import { mapGetters } from 'vuex';
         },
         data() {
             return {
+                selected: [],
                 overlay: false,
                 selectedImage:-1,
                 meta : this.$route.response,
@@ -144,12 +150,18 @@ import { mapGetters } from 'vuex';
         },
         methods: {
             select(num){
-                this.selectedImage=num                
+                this.selectedImage=num
+                this.selected.splice(0, this.selected.length, false)
+                // this.selected.forEach((element, idx) => {
+                //             this.selected[idx] = false
+                //         });
+                this.selected[num] = true
                 //this.display_images[0]=this.masked_images[this.selectedImage]
                 console.log("In select funtion display_images[0]",this.display_images[0])
                 console.log("this.selectedImage=num",this.selectedImage)
             },
             back(){
+                // this.selected[num] = false
                 this.selectedImage=-1;
             },
             save(){
@@ -166,6 +178,9 @@ import { mapGetters } from 'vuex';
                         console.log(response.data)
                         this.masked_images = response.data.masked_images
                         this.mask = response.data.mask
+                        this.mask.forEach((element, idx) => {
+                            this.selected[idx] = false
+                        });
                     })
                     .catch(error => console.log(error))
             },
@@ -191,10 +206,10 @@ import { mapGetters } from 'vuex';
                     .catch(error => console.log(error))
             },
             inpainting(){
-                // if (this.selectedImage == -1){
-                //     window.alert("객체를 선택해주세요")
-                //     return
-                // }
+                if (this.selectedImage == -1){
+                    window.alert("객체를 선택해주세요")
+                    return
+                }
                 console.log("this.mask[this.selectedImage]",this.mask[this.selectedImage])
                 axios_common.post('/sub3/inpainting/', {img:this.original_image,mask:this.mask[this.selectedImage]}, this.requestHeader)
                     .then(response => {

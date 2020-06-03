@@ -24,7 +24,7 @@ def predict(image, mask, root_path, AI_directory_path, model_type="life"):
 
     model.eval()
 
-    evaluate(model, dataset_val, device, image + 'result.jpg')
+    evaluate(model, dataset_val, device, image.split('.')[0] + 'result.jpg')
 
-    return image + 'result.jpg'
+    return image.split('.')[0] + 'result.jpg'
 
