@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.pa
 
 def evaluate(model, dataset, device, filename):
     print(BASE_DIR)
-    image, mask, gt, ori_size, img_name = zip(*[dataset[i] for i in range(1)])
+    image, mask, gt, ori_size = zip(*[dataset[i] for i in range(1)])
 
     image = torch.stack(image)
     mask = torch.stack(mask)
@@ -23,10 +23,10 @@ def evaluate(model, dataset, device, filename):
 
     RESULT_DIR = BASE_DIR + '\\Django\\media\\'
 
-    save_image(unnormalize(output), RESULT_DIR + img_name[0] + 'result.jpg')
+    save_image(unnormalize(output), RESULT_DIR + filename)
     print(ori_size)
     img_transform = transforms.Compose([transforms.Resize((ori_size[1], ori_size[0])), transforms.ToTensor()])
-    output = Image.open(RESULT_DIR + img_name[0] + 'result.jpg')
+    output = Image.open(RESULT_DIR + filename)
     print(output)
     output = img_transform(output)
-    save_image(output, RESULT_DIR + img_name[0] + 'result.jpg')
+    save_image(output, RESULT_DIR + filename)
