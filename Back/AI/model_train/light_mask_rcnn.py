@@ -16,7 +16,7 @@ import pickle
 from config import get_light_mask_rcnn_config
 from model_train.coco_utils import get_coco_api_from_dataset,get_coco,ConvertCocoPolysToMask
 from model_train.coco_eval import CocoEvaluator
-from models.light_mask_rcnn_model import get_mask_rcnn_model
+from models.light_mask_rcnn_model import get_mask_rcnn_model,get_pruned_config
 from utils import date2str
 
 def save_checkpoint(state,save_path,filename='checkpoint.{0}.pth.tar',timestamp=''):
@@ -36,11 +36,9 @@ def get_coco_dataloader(root_path,batch,Train=True):
     data_type ="val"
     if Train:
         data_type = "train"
-    transform_list.append(transforms.ToTensor())
-    #dataset = datasets.CocoDetection(root=root_path, annFile=annFile_path,transforms=transforms.Compose([ConvertCocoPolysToMask()]))
     dataset = get_coco(root_path, data_type, None)
     data_loader = torch.utils.data.DataLoader(
-        dataset, batch_size=2, shuffle=True, collate_fn=collate_fn)
+        dataset, batch_size=2, shuffle=True,collate_fn=collate_fn)
     return data_loader
 
 def train_one_epoch(model, optimizer,scheduler, data_loader, device, epoch, print_freq,num_warmup_step=0,updateBnFlag=True,decay_param=0.00001):
@@ -49,8 +47,6 @@ def train_one_epoch(model, optimizer,scheduler, data_loader, device, epoch, prin
     metric_logger.add_meter('lr', utils.SmoothedValue(window_size=1, fmt='{value:.6f}'))
     header = 'Epoch: [{}]'.format(epoch)
     for images, targets in metric_logger.log_every(data_loader, print_freq, header):
-        # for i in range(len(images)):
-        #     images[i] = torchvision.transforms.functional.to_tensor(images[i])
         images = list(torchvision.transforms.functional.to_tensor(image).to(device) for image in images)
         targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
         loss_dict = model(images, targets)
@@ -148,8 +144,8 @@ def train(model,epochs,train_loader,val_loader=None,frequency=5):
         optimizer, num_warmup_steps=num_warmup_steps, num_training_steps=num_training_steps
     )
 
-    #device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    device = torch.device("cpu")
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    #device = torch.device("cpu")
     model.to(device)
     record = []
     for epoch in range(epochs):
@@ -176,25 +172,18 @@ def train(model,epochs,train_loader,val_loader=None,frequency=5):
 
 
 if __name__ == "__main__":
-    backbone = ResNet([3,4,23,3])
-    layers = [3, 4, 23, 3]
+
+    layers = [3, 4, 23, 3] #the number of bottlenet layers for Resnet 101
     root="C:\\Users\\multicampus\\Downloads\\coco_dataset"
-    annotaition_direc = "C:\\Users\\multicampus\\Downloads\\coco_dataset\\annotations_trainval2017\\annotations"
-    train_annotaition_path = annotaition_direc + "\\instances_train2017.json"
-    val_annotaition_path = annotaition_direc + "\\instances_val2017.json"
-
-    train_data_path = "C:\\Users\\multicampus\\Downloads\\coco_dataset\\train2017"
-    val_data_path = "C:\\Users\\multicampus\\Downloads\\coco_dataset\\val2017"
-
-
-    #data = get_coco(root,"train",None)
-
     model = get_mask_rcnn_model(layers=layers,num_classes=91)
-    # train_loader = get_coco_dataloader(root_path=train_data_path,annFile_path=train_annotaition_path,batch=2,Train=True)
-    # val_loader= get_coco_dataloader(root_path=val_data_path,annFile_path=val_annotaition_path,batch=2,Train=True)
-
     train_loader = get_coco_dataloader(root_path=root, batch=1,Train=True)
     val_loader = get_coco_dataloader(root_path=root, batch=1, Train=True)
-    train(model=model,epochs=1,train_loader=train_loader,val_loader=val_loader)
+    train(model=model,epochs=40,train_loader=train_loader,val_loader=val_loader)
+
+    #get pruned structure and train again from scratch
+    pruned_cfg = get_pruned_config(model,0.4)
+    model = get_mask_rcnn_model(layers,num_classes=91,cfg=pruned_cfg)
+    train(model=model, epochs=40, train_loader=train_loader, val_loader=val_loader)
+
 
 
