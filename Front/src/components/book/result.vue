@@ -3,7 +3,12 @@
     <v-container class="grey lighten-5 pa-10">
       <v-row>        
         <v-col md="6" xs="12" sm="12" class="pa-0">
-          <v-carousel
+            <v-img
+                :src="`${back_server}:8000/media/${original_image}`"
+                height="600"
+            >            
+            </v-img>
+          <!-- <v-carousel
           height="600"
           >
             <v-carousel-item
@@ -13,7 +18,7 @@
               reverse-transition="fade-transition"
               transition="fade-transition"
             ></v-carousel-item>
-        </v-carousel>
+        </v-carousel> -->
         </v-col>
         <v-col md="6" xs="12" sm="12">
             <v-container
@@ -30,17 +35,17 @@
                             <v-img
                                 :src="`${back_server}:8000/media/${item}`"
                                 height="200px"
-                            >                                
+                            >
                             </v-img>
                                 <v-fade-transition>
                                     <v-overlay v-if="hover" absolute="absolute" color="#036358">
                                         <v-btn @click="select(i)">선택하기</v-btn>
+                                        <v-btn @click="save_mask(i)">저장하기</v-btn>
                                     </v-overlay>
                                 </v-fade-transition>
                             
                         </v-card>
-                    </v-hover>
-                  
+                    </v-hover>                  
                 </v-col>
                 <!-- <v-col cols="12" v-if="selectedImage >= 0">
                     <v-card class="sampletext" max-width = 95%
@@ -80,7 +85,6 @@
                     </v-card>
                 </v-col> -->
             </v-row>           
-           
             </v-container>
         </v-col>
 
@@ -92,6 +96,33 @@
             <v-btn class="ma-2" tile color="indigo" dark @click="resolution_up_edsr">해상도 올리기(edsr)</v-btn>   
             <v-btn class="ma-2" tile color="indigo" dark @click="resolution_up_prsr">해상도 올리기(prosr)</v-btn>   
             <v-btn class="ma-2" tile color="indigo" dark @click="inpainting">객체 삭제</v-btn>
+            <v-dialog v-model="dialog" max-width="450">
+                <v-card>
+                    <v-card-title class="headline">결과</v-card-title>
+                    <v-img
+                        :src="`${back_server}:8000/media/${display_images}`"
+                        height="200px"
+                    >
+                    </v-img>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="green darken-1"
+                        text
+                        @click="save_result"
+                    >
+                        저장하기
+                    </v-btn>
+
+                    <v-btn
+                        color="green darken-1"
+                        text
+                        @click="dialog = false"
+                    >
+                        취소하기
+                    </v-btn>
+                    
+                </v-card>
+            </v-dialog>
         </div>
     </v-container>
   </div>
@@ -99,9 +130,10 @@
 
 
 <script>
-import router from "../../router"
+//import router from "../../router"
 import axios_common from '../../axios_common';
 import { mapGetters } from 'vuex';
+import axios from 'axios'
 
     export default {
         props: ['response'],
@@ -127,6 +159,7 @@ import { mapGetters } from 'vuex';
         },
         data() {
             return {
+                dialog : false,
                 overlay: false,
                 selectedImage:-1,
                 meta : this.$route.response,
@@ -139,12 +172,12 @@ import { mapGetters } from 'vuex';
                 display_images : this.response.image,
                 masked_images: [],
                 mask:[]
-                
             }
         },
         methods: {
             select(num){
-                this.selectedImage=num                
+                console.log("event.target",event.target)
+                this.selectedImage=num
                 //this.display_images[0]=this.masked_images[this.selectedImage]
                 console.log("In select funtion display_images[0]",this.display_images[0])
                 console.log("this.selectedImage=num",this.selectedImage)
@@ -152,13 +185,34 @@ import { mapGetters } from 'vuex';
             back(){
                 this.selectedImage=-1;
             },
-            save(){
-                axios_common.post('/sub3/mystory/', {img:this.images, title : this.title, content : this.content}, this.requestHeader)
-                    .then(response => {
-                        console.log(response.data)
-                        router.push('/mybook')
-                    })
-                    .catch(error => console.log(error))
+            forceFileDownload(response){
+                const url = window.URL.createObjectURL(new Blob([response.data]))
+                const link = document.createElement('a')
+                link.href = url
+                link.setAttribute('download', 'file.png') //or any other extension
+                document.body.appendChild(link)
+                link.click()
+            },                
+            downloadWithVueResource(filename) {
+                axios({
+                    method: 'get',
+                    url: this.back_server+':8000/media/'+filename,
+                    responseType: 'arraybuffer'
+                })
+                .then(response => {
+                    this.forceFileDownload(response)  
+                })
+                .catch(() => console.log('error occured'))
+            },
+            save_mask(number){
+                var file_name=""
+                file_name = this.masked_images[number]
+                console.log("save_mask : filename",file_name)
+                this.downloadWithVueResource(file_name)
+            },
+            save_result(){
+                this.downloadWithVueResource(this.display_images)
+                this.dialog=false
             },
             mask_rcnn(){
                 axios_common.post('/sub3/mask_rcnn/', {img:this.original_image}, this.requestHeader)
@@ -173,10 +227,11 @@ import { mapGetters } from 'vuex';
                 axios_common.post('/sub3/resolution_up_edsr/', {img:this.original_image}, this.requestHeader)
                     .then(response => {
                         console.log("resolution",response.data.resolution_up)
-                        //this.display_images[0] = response.data.resolution_up[0]
-                        this.display_images.push(response.data.resolution_up[0])
+                        this.display_images = response.data.resolution_up[0]
+                        //this.display_images.push(response.data.resolution_up[0])
                         console.log("this.display_images[0]",this.display_images[0])
                         console.log("this.display_images",this.display_images)
+                        this.dialog = true
                     })
                     .catch(error => console.log(error))
             },
@@ -185,8 +240,10 @@ import { mapGetters } from 'vuex';
                     .then(response => {
                         console.log("resolution",response.data.resolution_up)
                         this.display_images.push(response.data.resolution_up)
+                        this.display_images = response.data.resolution_up[0]
                         console.log("this.display_images[0]",this.display_images[0])
                         console.log("this.display_images",this.display_images)
+                        this.dialog = true
                     })
                     .catch(error => console.log(error))
             },
@@ -199,8 +256,9 @@ import { mapGetters } from 'vuex';
                 axios_common.post('/sub3/inpainting/', {img:this.original_image,mask:this.mask[this.selectedImage]}, this.requestHeader)
                     .then(response => {
                         console.log("inpainting",response.data)
-                        //this.display_images[0] = response.data.inpainting
-                        this.display_images.push(response.data.inpainting)                    
+                        this.display_images = response.data.inpainting
+                        //this.display_images.push(response.data.inpainting)
+                        this.dialog = true            
                     })
                     .catch(error => console.log(error))
             }

@@ -174,9 +174,7 @@
         
       </v-layout>
     </section>
-      <v-row style="height: 150px; "></v-row>
-      
-    <othersbook></othersbook>
+      <v-row style="height: 150px; "></v-row>    
     <company></company>
     
   </div>
@@ -184,7 +182,7 @@
 
 
 <script>
-import othersbook from './home/othersbook'
+
 import company from './home/footer'
 import { mapGetters } from 'vuex';
 import Upload from "./home/ImageUploader.vue";
@@ -192,8 +190,7 @@ import Upload from "./home/ImageUploader.vue";
 export default {
   
   name: 'home',
-  components: {
-    othersbook,
+  components: {    
     company,
     Upload,
   },
