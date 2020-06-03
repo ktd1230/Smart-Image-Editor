@@ -107,12 +107,12 @@ def change(img_name,img_path):
             # 출력
             fn = osp.join(output_dir, osp.basename(data['input_fn'][0]))
             io.imsave(fn, sr_img)
-            ir = io.imread(fn)
-            w , h, s = ir.shape
-            nw=int(w/2)
-            nh=int(h/2)
-            resize_img = cv2.resize(ir, (0, 0),fx=0.5,fy=0.5, interpolation=cv2.INTER_AREA)
-            io.imsave(fn,resize_img)
+            # ir = io.imread(fn)
+            # w , h, s = ir.shape
+            # nw=int(w/2)
+            # nh=int(h/2)
+            # resize_img = cv2.resize(ir, (0, 0),fx=0.5,fy=0.5, interpolation=cv2.INTER_AREA)
+            # io.imsave(fn,resize_img)
 
 
         if len(target_path):
