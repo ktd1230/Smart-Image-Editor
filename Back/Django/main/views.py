@@ -26,7 +26,7 @@ sys.path.append(
     + "/AI/prosr_library/"
 )
 
-#import prosr_test
+import prosr_test
 from .models import Story
 from .serializers import *
 import json
@@ -77,7 +77,6 @@ def resolution_up_prosr(request):
     # output_file_name = predict(file_name,MEDIA_ROOT,AI_directory_path="/home/ubuntu/s02p23c104/Back/AI",model_type=modeltype)
     output_file_name = prosr_test.change(file_name, MEDIA_ROOT)
     print("결과@@@@@@", output_file_name)
-    output_file_name = file_name
     return JsonResponse({"resolution_up": output_file_name})
 
 
