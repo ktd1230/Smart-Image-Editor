@@ -39,12 +39,20 @@ sys.path.append((base_path / "..\\..\\AI\\edsr_library").resolve().__str__())
 # print("sys.path = {}".format(sys.path))
 
 from edsr_predict import predict as edsr_prediction
-
+from segmentation_predict import predict as mask_rcnn_prediction
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])
 def mask_rcnn(request):
-    print(request.data['img'])
+    print("views.py | mask_rcnn(request)")
+    file_name = request.data['img']
+    print("file_name:{}".format(file_name))
+    print("MEDIA_ROOT path:{}".format(MEDIA_ROOT))
+    # base_path = Path(__file__).parent.absolute()
+    print(MEDIA_ROOT + '\\')
+    result = mask_rcnn_prediction(file_name, MEDIA_ROOT + '\\')
+    print(result)
+    return JsonResponse({'masked_images':result[0], 'mask':result[1]})
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])    
