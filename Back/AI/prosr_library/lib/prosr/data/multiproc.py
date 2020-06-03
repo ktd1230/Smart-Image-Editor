@@ -8,7 +8,8 @@ import threading
 import sys
 from torch._utils import ExceptionWrapper
 from torch.utils.data._utils.pin_memory import _pin_memory_loop, pin_memory
-from torch.utils.data._utils.signal_handling import _set_SIGCHLD_handler
+from torch.utils.data._utils.signal_handling import _set_SIGCHLD_handler,_remove_worker_pids
+from torch.utils.data import _utils
 """
 A hacky way to schedule different scales with dataset.get()
 """
@@ -110,8 +111,8 @@ class MyDataLoaderIter(_BaseDataLoaderIter):
             for w in self.workers:
                 w.daemon = True  # ensure that the worker exits on process exit
                 w.start()
-
-            _update_worker_pids(id(self), tuple(w.pid for w in self.workers))
+            # 이부분 _update_worker_pids 를 _set_worker_pids로 변경
+            _set_worker_pids(id(self), tuple(w.pid for w in self.workers))
             _set_SIGCHLD_handler()
             self.worker_pids_set = True
 
@@ -148,6 +149,7 @@ class MyDataLoaderIter(_BaseDataLoaderIter):
                 # store out-of-order samples
                 self.reorder_dict[idx] = batch
                 continue
+            print("확인용@@@", self._process_next_batch(batch))
             return self._process_next_batch(batch)
 
     def _put_indices(self):
@@ -163,6 +165,73 @@ class MyDataLoaderIter(_BaseDataLoaderIter):
         self.batches_outstanding += 1
         self.send_idx += 1
 
+    def _process_next_batch(self, batch):
+        self.rcvd_idx += 1
+        self._put_indices()
+        if isinstance(batch, ExceptionWrapper):
+            # make multiline KeyError msg readable by working around
+            # a python bug https://bugs.python.org/issue2651
+            if batch.exc_type == KeyError and "\n" in batch.exc_msg:
+                raise Exception("KeyError:" + batch.exc_msg)
+            else:
+                raise batch.exc_type(batch.exc_msg)
+        return batch
+
+    def _shutdown_workers(self):
+        # See NOTE [ Data Loader Multiprocessing Shutdown Logic ] for details on
+        # the logic of this function.
+        python_exit_status = _utils.python_exit_status
+        if python_exit_status is True or python_exit_status is None:
+            # See (2) of the note. If Python is shutting down, do no-op.
+            return
+        # Normal exit when last reference is gone / iterator is depleted.
+        # See (1) and the second half of the note.
+        if not self.shutdown:
+            self.shutdown = True
+            try:
+                self.done_event.set()
+
+                # Exit `pin_memory_thread` first because exiting workers may leave
+                # corrupted data in `worker_result_queue` which `pin_memory_thread`
+                # reads from.
+                if hasattr(self, 'pin_memory_thread'):
+                    # Use hasattr in case error happens before we set the attribute.
+                    # First time do `worker_result_queue.put` in this process.
+
+                    # `cancel_join_thread` in case that `pin_memory_thread` exited.
+                    self.worker_result_queue.cancel_join_thread()
+                    self.worker_result_queue.put(None)
+                    self.pin_memory_thread.join()
+                    # Indicate that no more data will be put on this queue by the
+                    # current process. This **must** be called after
+                    # `pin_memory_thread` is joined because that thread shares the
+                    # same pipe handles with this loader thread. If the handle is
+                    # closed, Py3 will error in this case, but Py2 will just time
+                    # out even if there is data in the queue.
+                    self.worker_result_queue.close()
+
+                # Exit workers now.
+                for q in self.index_queues:
+                    q.put(None)
+                    # Indicate that no more data will be put on this queue by the
+                    # current process.
+                    q.close()
+                for w in self.workers:
+                    w.join()
+            finally:
+                # Even though all this function does is putting into queues that
+                # we have called `cancel_join_thread` on, weird things can
+                # happen when a worker is killed by a signal, e.g., hanging in
+                # `Event.set()`. So we need to guard this with SIGCHLD handler,
+                # and remove pids from the C side data structure only at the
+                # end.
+                #
+                # FIXME: Unfortunately, for Windows, we are missing a worker
+                #        error detection mechanism here in this function, as it
+                #        doesn't provide a SIGCHLD handler.
+                if self.worker_pids_set:
+                    _remove_worker_pids(id(self))
+                    self.worker_pids_set = False
 
 class MyDataLoader(DataLoader):
     """
