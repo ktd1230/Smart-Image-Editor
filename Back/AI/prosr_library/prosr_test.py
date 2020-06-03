@@ -105,7 +105,7 @@ def change(img_name,img_path):
                     len(dataset), toc - tic)
 
             # 출력
-            fn = osp.join(output_dir, osp.basename(data['input_fn'][0]))
+            fn = osp.join(output_dir, 'result_'+osp.basename(data['input_fn'][0]))
             io.imsave(fn, sr_img)
             # ir = io.imread(fn)
             # w , h, s = ir.shape
@@ -119,6 +119,6 @@ def change(img_name,img_path):
             psnr_mean /= len(dataset)
             ssim_mean /= len(dataset)
             print_evaluation("average", psnr_mean, ssim_mean)
-        return osp.basename(data['input_fn'][0])
+        return 'result_'+osp.basename(data['input_fn'][0])
 # if __name__ == '__main__':
 #     change('waterfall.jpg')
