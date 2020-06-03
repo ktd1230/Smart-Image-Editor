@@ -168,10 +168,12 @@ import { mapGetters } from 'vuex';
                     .catch(error => console.log(error))
             },
             resolution_up(){
+                console.log("resolution_up() called")
                 axios_common.post('/sub3/resolution_up/', {img:this.original_image}, this.requestHeader)
                     .then(response => {
-                        console.log("resolution",response.data)
-                        this.display_images[0] = response.data.resolution_up                        
+                        console.log("output image name : ",response.data.resolution_up[0])
+                        // this.display_images[0] = response.data.resolution_up
+                        this.display_images.push(response.data.resolution_up[0])
                     })
                     .catch(error => console.log(error))
             },

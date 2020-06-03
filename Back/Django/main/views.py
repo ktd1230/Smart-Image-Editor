@@ -45,6 +45,8 @@ sys.path.append((base_path / "..\\..\\AI\\inpainting_library").resolve().__str__
 # print("sys.path = {}".format(sys.path))
 
 from edsr_predict import predict as edsr_prediction
+# from edsr_predict import downscale_by_ratio
+
 from inpainting_predict import predict as inpainting_predict
 
 # import sys.path[10]
@@ -90,6 +92,8 @@ def resolution_up(request):
     file_name = request.data["img"]
     print("file_name:{}".format(file_name))
     print("MEDIA_ROOT path:{}".format(MEDIA_ROOT))
+
+    # downscale_by_ratio(file_name, MEDIA_ROOT, 2)  # Before EDSR
     base_path = Path(__file__).parent.absolute()
     print("base_path : {}".format(base_path))
     model_path = (base_path / "../../AI/experiment/edsr_baseline_x2/model/model_best.pt").resolve()
@@ -98,7 +102,8 @@ def resolution_up(request):
         images=file_name, root_path=MEDIA_ROOT, ai_directory_path=model_path
     )
     print("output_file_name:{}".format(output_file_name))
-    return JsonResponse({"resolution_up": output_file_name})
+    # downscale_by_ratio(output_file_name[0], MEDIA_ROOT, 2)  # After EDSR
+    return JsonResponse({'resolution_up':output_file_name})
 
 
 @api_view(["POST"])
