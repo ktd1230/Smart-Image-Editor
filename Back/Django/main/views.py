@@ -26,9 +26,7 @@ sys.path.append(
     + "/AI/prosr_library/"
 )
 
-import prosr_test
-
-# from AI.prediction import predict
+#import prosr_test
 from .models import Story
 from .serializers import *
 import json
@@ -87,7 +85,7 @@ def resolution_up_prosr(request):
 @permission_classes(
     [IsAuthenticated,]
 )
-def resolution_up(request):
+def resolution_up_edsr(request):
     print("views.py | resolution_up(request)")
     file_name = request.data["img"]
     print("file_name:{}".format(file_name))
