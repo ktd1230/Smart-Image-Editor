@@ -31,7 +31,7 @@
                                 :src="`${back_server}:8000/media/${item}`"
                                 height="200px"
                             >                                
-                            </v-img>                                
+                            </v-img>
                                 <v-fade-transition>
                                     <v-overlay v-if="hover" absolute="absolute" color="#036358">
                                         <v-btn @click="select(i)">선택하기</v-btn>
@@ -42,24 +42,24 @@
                     </v-hover>
                   
                 </v-col>
-                <v-col cols="12" v-if="selectedImage >= 0">
-                <v-card class="sampletext" max-width = 95%
-                data-aos="fade-down"
-                data-aos-duration="3000"
-                data-aos-delay="150"
-                >
+                <!-- <v-col cols="12" v-if="selectedImage >= 0">
+                    <v-card class="sampletext" max-width = 95%
+                    data-aos="fade-down"
+                    data-aos-duration="3000"
+                    data-aos-delay="150"
+                    >
                         <v-card-title>
-                    <v-col cols="5">
-                        <v-text-field 
-                        single-line
-                        :disabled="!enabled"
-                        v-model="title"
-                        >
-                        <template v-slot:label >
-                        <strong>{{selectedImage+1}}번</strong> 샘플
-                         </template>    
-                        </v-text-field>
-                    </v-col>
+                            <v-col cols="5">
+                                <v-text-field 
+                                single-line
+                                :disabled="!enabled"
+                                v-model="title"
+                                >
+                                <template v-slot:label >
+                                <strong>{{selectedImage+1}}번</strong> 샘플
+                                </template>    
+                                </v-text-field>
+                            </v-col>
                         </v-card-title>
                         <v-card-text class="text--primary">
                         <v-textarea
@@ -78,7 +78,7 @@
                         </v-col>
                         </v-card-text>
                     </v-card>
-                </v-col>
+                </v-col> -->
             </v-row>           
            
             </v-container>
@@ -89,7 +89,8 @@
     <v-container>
         <div class="text-center">
             <v-btn class="ma-2" tile color="indigo" dark @click="mask_rcnn">테두리 얻어내기</v-btn>
-            <v-btn class="ma-2" tile color="indigo" dark @click="resolution_up">해상도 올리기</v-btn>   
+            <v-btn class="ma-2" tile color="indigo" dark @click="resolution_up_edsr">해상도 올리기(edsr)</v-btn>   
+            <v-btn class="ma-2" tile color="indigo" dark @click="resolution_up_prsr">해상도 올리기(prosr)</v-btn>   
             <v-btn class="ma-2" tile color="indigo" dark @click="inpainting">객체 삭제</v-btn>
         </div>
     </v-container>
@@ -143,9 +144,10 @@ import { mapGetters } from 'vuex';
         },
         methods: {
             select(num){
-                this.selectedImage=num
-                console.log(this.items.text[0])
-                this.display_images[0]=this.masked_images[this.selectedImage]
+                this.selectedImage=num                
+                //this.display_images[0]=this.masked_images[this.selectedImage]
+                console.log("In select funtion display_images[0]",this.display_images[0])
+                console.log("this.selectedImage=num",this.selectedImage)
             },
             back(){
                 this.selectedImage=-1;
@@ -167,13 +169,24 @@ import { mapGetters } from 'vuex';
                     })
                     .catch(error => console.log(error))
             },
-            resolution_up(){
-                console.log("resolution_up() called")
-                axios_common.post('/sub3/resolution_up/', {img:this.original_image}, this.requestHeader)
+            resolution_up_edsr(){
+                axios_common.post('/sub3/resolution_up_edsr/', {img:this.original_image}, this.requestHeader)
                     .then(response => {
-                        console.log("output image name : ",response.data.resolution_up[0])
-                        // this.display_images[0] = response.data.resolution_up
+                        console.log("resolution",response.data.resolution_up)
+                        //this.display_images[0] = response.data.resolution_up[0]
                         this.display_images.push(response.data.resolution_up[0])
+                        console.log("this.display_images[0]",this.display_images[0])
+                        console.log("this.display_images",this.display_images)
+                    })
+                    .catch(error => console.log(error))
+            },
+            resolution_up_prsr(){
+                axios_common.post('/sub3/resolution_up_prosr/', {img:this.original_image}, this.requestHeader)
+                    .then(response => {
+                        console.log("resolution",response.data.resolution_up)
+                        this.display_images[0] = response.data.resolution_up[0]
+                        console.log("this.display_images[0]",this.display_images[0])
+                        console.log("this.display_images",this.display_images)
                     })
                     .catch(error => console.log(error))
             },
@@ -182,9 +195,11 @@ import { mapGetters } from 'vuex';
                 //     window.alert("객체를 선택해주세요")
                 //     return
                 // }
+                console.log("this.mask[this.selectedImage]",this.mask[this.selectedImage])
                 axios_common.post('/sub3/inpainting/', {img:this.original_image,mask:this.mask[this.selectedImage]}, this.requestHeader)
                     .then(response => {
                         console.log("inpainting",response.data)
+                        //this.display_images[0] = response.data.inpainting
                         this.display_images.push(response.data.inpainting)                    
                     })
                     .catch(error => console.log(error))
