@@ -35,7 +35,7 @@
                             <v-img
                                 :src="`${back_server}:8000/media/${item}`"
                                 height="200px"
-                            >                                
+                            >
                             </v-img>
                                 <v-fade-transition>
                                     <v-overlay v-if="hover" absolute="absolute" color="#036358">
@@ -102,11 +102,9 @@
                     <v-img
                         :src="`${back_server}:8000/media/${display_images}`"
                         height="200px"
-                    >                                
+                    >
                     </v-img>
-                    
                     <v-spacer></v-spacer>
-
                     <v-btn
                         color="green darken-1"
                         text
