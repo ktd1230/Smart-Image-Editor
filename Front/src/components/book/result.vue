@@ -239,6 +239,7 @@ import axios from 'axios'
                 axios_common.post('/sub3/resolution_up_prosr/', {img:this.original_image}, this.requestHeader)
                     .then(response => {
                         console.log("resolution",response.data.resolution_up)
+                        this.display_images.push(response.data.resolution_up)
                         this.display_images = response.data.resolution_up[0]
                         console.log("this.display_images[0]",this.display_images[0])
                         console.log("this.display_images",this.display_images)
