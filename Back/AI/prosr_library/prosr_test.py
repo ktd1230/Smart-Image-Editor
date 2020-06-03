@@ -1,10 +1,3 @@
-import sys
-from pathlib import Path
-
-base_path = Path(__file__).parent.absolute()
-sys.path.append((base_path / "..\\..\\AI\\prosr_library\\lib").resolve().__str__())
-
-
 from pprint import pprint
 from prosr import Phase
 from prosr.data import DataLoader, Dataset, DataChunks
