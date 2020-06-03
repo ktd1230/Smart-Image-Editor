@@ -8,7 +8,7 @@
                 <div>Team info</div>
               </v-card-title>
               <v-card-text class="cardtext text-center">
-              조승우, 이경석, 양예은, 정은지
+              이경석, 최창현, 김대들, 김태동, 원태희
               </v-card-text>
             </v-card>
           </v-flex>
