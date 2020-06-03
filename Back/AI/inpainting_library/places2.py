@@ -7,9 +7,7 @@ class Places2(torch.utils.data.Dataset):
         super(Places2, self).__init__()
         self.img_transform = img_transform
         self.mask_transform = mask_transform
-        self.img_name = img_name.split('.')[0]
-        print('aaaaaaaaaaaaaaaaaaaaaa')
-        print(self.img_name)
+
         self.paths = []
         self.mask_paths = []
 
@@ -29,7 +27,7 @@ class Places2(torch.utils.data.Dataset):
 
         mask = Image.open(self.mask_paths[random.randint(0, self.N_mask - 1)])
         mask = self.mask_transform(mask.convert('RGB'))
-        return gt_img * mask, mask, gt_img, ori_size, self.img_name
+        return gt_img * mask, mask, gt_img, ori_size
 
     def __len__(self):
         return len(self.paths)
