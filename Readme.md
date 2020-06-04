@@ -11,12 +11,11 @@
 
 ```bash
 
-$ conda activate "가상환경이름"
-
-$ pip install djangorestframework-jwt
-$ pip install djangorestframework
-$ pip install django-cors-headers
-$ pip install -U drf-yasg
+$ conda create -n 가상환경이름 python=3.7
+$ conda activate 가상환경이름
+$ conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
+$ cd s02p31c101/Back/Django
+$ pip install -r requirements.txt
 ```
 
 ```bash
