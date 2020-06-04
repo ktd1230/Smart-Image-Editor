@@ -134,8 +134,8 @@ export default {
     // console.log(this.$route.response)
     // console.log("result창")
     console.log(this.response);
-    //this.back_server = "http://13.124.246.175"
-    this.back_server = "http://localhost";
+    this.back_server = "http://k02c1011.p.ssafy.io"
+    //this.back_server = "http://localhost";
   },
   data() {
     return {

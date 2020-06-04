@@ -24,7 +24,7 @@ parser.add_argument('--dir_data', type=str, default='../dataset',
                     help='dataset directory')
 parser.add_argument('--dir_demo',
                     type=str,
-                    default=(Path(__file__).parent.absolute() / "..\\..\\Django\\media").resolve().__str__(),
+                    default=(Path(__file__).parent.absolute() / "../../Django/media").resolve().__str__(),
                     help='demo image directory')
 parser.add_argument('--data_train', type=str, default='DIV2K',
                     help='train dataset name')
