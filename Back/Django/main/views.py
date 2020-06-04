@@ -41,8 +41,8 @@ def mask_rcnn(request):
     print("file_name:{}".format(file_name))
     print("MEDIA_ROOT path:{}".format(MEDIA_ROOT))
     # base_path = Path(__file__).parent.absolute()
-    print(MEDIA_ROOT + "\\")
-    result = mask_rcnn_prediction(file_name, MEDIA_ROOT + "\\")
+    print(MEDIA_ROOT + "/")
+    result = mask_rcnn_prediction(file_name, MEDIA_ROOT + "/")
     print(result)
     return JsonResponse({"masked_images": result[0], "mask": result[1]})
 
