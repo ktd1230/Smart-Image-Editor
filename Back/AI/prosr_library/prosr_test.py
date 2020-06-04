@@ -25,9 +25,11 @@ def change(img_name,img_path):
     output_dir = OUTPUT_ROOT
     max_dimension = 0
     padding = 0
-    useCPU = False
+    useCPU = True
     # cuda
-    checkpoint = torch.load(model_path)
+    
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    checkpoint = torch.load(model_path, map_location=device)
     cls_model = getattr(prosr.models, checkpoint['class_name'])
     model = cls_model(**checkpoint['params']['G'])
     model.load_state_dict(checkpoint['state_dict'])
@@ -41,7 +43,6 @@ def change(img_name,img_path):
 
     model.eval()
 
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
     # 여기서부터 이제 받아온 데이터로 셋팅
@@ -84,7 +85,6 @@ def change(img_name,img_path):
                 output = data_chunks.concatenate() + data['bicubic']
             else:
                 input = data['input']
-                print("input: ", data['input'])
                 if not useCPU:
                     input = input.cuda()
                 output = model(input, scale[scale_idx]).cpu() + data['bicubic']

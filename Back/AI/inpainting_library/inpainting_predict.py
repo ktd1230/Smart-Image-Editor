@@ -6,10 +6,11 @@ from places2 import Places2
 from evaluation import evaluate
 from net import PConvUNet
 from util.io import load_ckpt
+from util.io import get_state_dict_on_cpu
 
 def predict(image, mask, root_path, AI_directory_path, model_type="life"):
 
-    device = torch.device('cuda')
+    device = torch.device("cpu")
 
     size = (256, 256)
     img_transform = transforms.Compose(
@@ -20,7 +21,8 @@ def predict(image, mask, root_path, AI_directory_path, model_type="life"):
 
     dataset_val = Places2(root_path, image, mask, img_transform, mask_transform)
     model = PConvUNet().to(device)
-    load_ckpt(AI_directory_path, [('model', model)])
+    load_ckpt(device, AI_directory_path, [('model', model)])
+    # get_state_dict_on_cpu(model)
 
     model.eval()
 
