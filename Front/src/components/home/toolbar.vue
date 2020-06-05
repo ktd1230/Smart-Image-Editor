@@ -123,7 +123,7 @@
             </v-menu>
           </div>
           
-          <v-btn icon @click="openDialog(true)"><v-icon color="white" v-if="isAuthenticated">mdi-plus</v-icon></v-btn>
+          <v-btn v-if="isAuthenticated" icon @click="openDialog(true)"><v-icon color="white">mdi-plus</v-icon></v-btn>
         </v-layout>
       </v-container>
 
