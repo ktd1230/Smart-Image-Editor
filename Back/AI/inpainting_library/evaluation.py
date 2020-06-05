@@ -21,7 +21,7 @@ def evaluate(model, dataset, device, filename):
         output, _ = model(image.to(device), mask.to(device))
     output = output.to(torch.device('cpu'))
 
-    RESULT_DIR = BASE_DIR + '\\Django\\media\\'
+    RESULT_DIR = BASE_DIR + '/Django/media/'
 
     save_image(unnormalize(output), RESULT_DIR + filename)
     print(ori_size)

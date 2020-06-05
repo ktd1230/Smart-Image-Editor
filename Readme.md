@@ -10,13 +10,12 @@
 5. 아래에 따라 입력한다.
 
 ```bash
-
-$ conda activate "가상환경이름"
-
-$ pip install djangorestframework-jwt
-$ pip install djangorestframework
-$ pip install django-cors-headers
-$ pip install -U drf-yasg
+# Windows 10 개발환경 기준입니다. 배포(Linux)환경에서는 추가적인 작업이 필요할 수 있습니다.
+$ conda create -n 가상환경이름 python=3.7
+$ conda activate 가상환경이름
+$ conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
+$ cd s02p31c101/Back/Django
+$ pip install -r requirements.txt
 ```
 
 ```bash
@@ -28,12 +27,27 @@ $ python manage.py migrate
 $ python manage.py runserver  
 ```
 
+## 배포(Linux)환경 opencv-python 관련 에러
 
+GUI가 아닌 OS에서는 다음과 같은 문제가 발생할 수 있습니다.
 
+apt-get 명령어를 이용하여 해결할 수 있습니다.
 
+```text
+  File "/home/ubuntu/deploy/s02p31c101/Back/Django/main/views.py", line 36, in <module>
+    import prosr_test
+  File "/home/ubuntu/deploy/s02p31c101/Back/AI/prosr_library/prosr_test.py", line 19, in <module>
+    import cv2
+  File "/home/ubuntu/anaconda3/envs/release-0.6.3/lib/python3.7/site-packages/cv2/__init__.py", line 5, in <module>
+    from .cv2 import *
+ImportError: libSM.so.6: cannot open shared object file: No such file or directory
+```
 
-
-
+```bash
+$ apt-get update
+$ apt-get install -y libsm6 libxext6 libxrender-dev
+$ pip install opencv-python
+```
 
 #  Vue 설정
 
@@ -81,27 +95,19 @@ $ python manage.py runserver
   + matplotlib
   + tqdm
   + opencv-python
-  + PIL
+  + pillow (PIL)
 
-# ProSR 설정
-
-환경은 반드시 Python 3.8 이전 버전 사용할 것
-
-# Install torch
-conda install pytorch=0.4.1 torchvision cuda91 -c pytorch
-
-pytorch는 반드시 저 버전으로 설치할 것 이후 버전은 내장 함수, 클래스를 변경하여 작동이 안됨....
-
-# Install image libraries
-conda install scikit-image cython
-
-# Install visdom
-conda install visdom dominate -c conda-forge
-
-# Install python dependencies
-python3.7 -m pip install easydict pillow
-
-Search Path
-export PYTHONPATH=$PROJECT_ROOT/lib:$PYTHONPATH to include proSR into the search path.
-
-Window일경우 제어판- 시스템- 환경변수에서 PYTHONPATH 이름 지정해주고 경로 설정 해주면 됨
++ PROSR
+  + 환경은 반드시 Python 3.8 이전 버전 사용할 것
+  + (현재 사용되지 않음) conda install pytorch=0.4.1 torchvision cuda91 -c pytorch
+    + pytorch는 반드시 저 버전으로 설치할 것 이후 버전은 내장 함수, 클래스를 변경하여 작동이 안됨....
+  + conda install scikit-image cython
+  + conda install visdom dominate -c conda-forge
+  + python3.7 -m pip install easydict pillow
+  + Search Path (아래 과정을 수행하지 않아도 동작되도록 수정됨 : https://lab.ssafy.com/s02-final/s02p31c101/issues/4)
+    + export PYTHONPATH=$PROJECT_ROOT/lib:$PYTHONPATH to include proSR into the search path.
+    + Window일경우 제어판 - 시스템 - 환경변수에서 PYTHONPATH 이름 지정해주고 경로 설정 해주면 됨
+    ```text
+    변수 이름 : PYTHONPATH
+    변수   값 : s02p31c101\Back\AI\prosr_library\lib
+    ```
