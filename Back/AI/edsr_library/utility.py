@@ -60,9 +60,10 @@ class checkpoint():
             else:
                 args.load = ''
 
+        print("self.dif == {}".format(self.dir))
         if args.reset:
-            # os.system('rm -rf ' + self.dir)
-            os.system(("rmdir /s /q " + self.dir))
+            os.system('rm -rf ' + self.dir)
+            # os.system(("rmdir /s /q " + self.dir))
             args.load = ''
 
         os.makedirs(self.dir, exist_ok=True)
