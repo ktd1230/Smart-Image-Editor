@@ -11,8 +11,19 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sub3.settings')
+import sys
+from pathlib import Path
 
+base_path = Path(__file__).parent.absolute()
+sys.path.append((base_path / "../").resolve().__str__())
+sys.path.append((base_path / "../sub3").resolve().__str__())
+sys.path.append((base_path / "../..").resolve().__str__())
+sys.path.append((base_path / "../../AI").resolve().__str__())
+sys.path.append((base_path / "../../AI/edsr_library").resolve().__str__())
+sys.path.append((base_path / "../../AI/prosr_library").resolve().__str__())
+sys.path.append((base_path / "../../AI/prosr_library/lib").resolve().__str__())
+sys.path.append((base_path / "../../AI/inpainting_library").resolve().__str__())
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sub3.settings')
 application = get_wsgi_application()
 
 # uwsgi_param QUERY_STRING $ query_string;

@@ -12,7 +12,7 @@ import prosr
 import cv2
 import skimage.io as io
 import torch
-from settings import MODEL_ROOT,OUTPUT_ROOT 
+from prosr_settings import MODEL_ROOT,OUTPUT_ROOT 
 # img_name은 확장자까지 필요..jpg, png 등
 
 def change(img_name,img_path):
