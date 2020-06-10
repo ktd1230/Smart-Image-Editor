@@ -3,7 +3,7 @@
     <v-container class="grey lighten-5 pa-10">
       <v-row>
         <v-col md="6" xs="12" sm="12" class="pa-0">
-          <v-img :src="`${back_server}:8000/media/${original_image}`" height="600"></v-img>
+          <v-img :src="`${back_server}:8000/media/${original_image}`"></v-img>
           <!-- <v-carousel
           height="600"
           >
@@ -99,7 +99,7 @@
         <v-dialog v-model="dialog" max-width="450">
           <v-card>
             <v-card-title class="headline">결과</v-card-title>
-            <v-img :src="`${back_server}:8000/media/${display_images}`" height="200px"></v-img>
+            <v-img :src="`${back_server}:8000/media/${display_images}`"></v-img>
             <v-spacer></v-spacer>
             <v-btn color="green darken-1" text @click="save_result">저장하기</v-btn>
 
