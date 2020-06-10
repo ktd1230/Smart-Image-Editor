@@ -39,6 +39,9 @@ import Loading from './components/home/loading.vue';
     }
 </script>
 <style scoped>
+.v-toolbar{
+  flex: none;
+}
 .fixed {
     position: fixed;
     right: 50%;
