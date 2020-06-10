@@ -20,14 +20,13 @@ def random_colors(N, bright=True):
     random.shuffle(colors)
     return colors
 
-def apply_mask(image, mask, color, alpha=0.5):
+def apply_mask(image, mask, color, alpha=0):
     """Apply the given mask to the image.
     """
     print(mask)
     for c in range(3):
         image[c,:, :] = np.where(mask == 0,
-                                  image[c,:, :] *
-                                  (1 - alpha) + alpha * color[c] * 255,
+                                  image[c,:, :] ,
                                   0)
 
     return image
@@ -158,6 +157,6 @@ if __name__ == "__main__":
     #main()
     image_root = "C:\\Users\\multicampus\\Downloads\\asdf\\"
     #image = "000000000009.jpg"
-    image = "000000000036.jpg"
+    image = "tedong_test3.png"
     predict(image,image_root)
 
