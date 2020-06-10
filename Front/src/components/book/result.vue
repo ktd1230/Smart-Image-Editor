@@ -30,8 +30,7 @@
                         <v-card class="sampletext" max-width = 95%>
                             <v-card-title>{{i+1}}번 객체</v-card-title>
                             <v-img
-                                :src="`${back_server}:8000/media/${item}`"
-                                height="200px"
+                                :src="`${back_server}:8000/media/${item}`"                                
                             >                                
                             </v-img>
                                 <!-- <v-fade-transition> -->
