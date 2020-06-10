@@ -30,8 +30,7 @@
                         <v-card class="sampletext" max-width = 95%>
                             <v-card-title>{{i+1}}번 객체</v-card-title>
                             <v-img
-                                :src="`${back_server}:8000/media/${item}`"
-                                height="200px"
+                                :src="`${back_server}:8000/media/${item}`"                                
                             >                                
                             </v-img>
                                 <!-- <v-fade-transition> -->
@@ -218,6 +217,12 @@ export default {
         .catch(error => console.log(error));
     },
     resolution_up_edsr() {
+      let img = new Image();
+      img.src = `${this.back_server}:8000/media/${this.original_image}`
+      if(img.width >= 960 || img.height >=960){
+        window.alert("이미지 가로는 480px 이하이여야 합니다.")
+        return
+      }        
       bus.$emit("start:loading");
       axios_common
         .post(
