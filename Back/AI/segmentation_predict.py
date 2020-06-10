@@ -35,6 +35,8 @@ def apply_mask(image, mask, color, alpha=0.5):
 def image_load(image,image_saved_path):
     # Read image using PIL
     im = Image.open(image_saved_path + image)
+    if ".png" in image:
+        im = im.convert('RGB')
     return im
 
 def transform_to_tensor(im):
@@ -84,7 +86,7 @@ def gather_mask_beyond_threshold(output,threshold=0.5):
 
     scores = list(output['scores'].detach().cpu().numpy())
     pred_t = [scores.index(x) for x in scores if x > threshold][-1]
-    masks = (output['masks'] < 0.5).squeeze().detach().cpu().numpy().astype(np.uint8)*255
+    masks = (output['masks'] < 0.1).squeeze().detach().cpu().numpy().astype(np.uint8)*255
     masks = masks[:pred_t + 1]
     return masks
 
