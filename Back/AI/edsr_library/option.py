@@ -211,8 +211,6 @@ def set_setting_value_edsr(images, root_path, ai_directory_path, use_cpu=False):
     args.no_augment = False
     args.optimizer = 'ADAM'
     args.patch_size = 192
-    # args.pre_train = '../experiment/edsr_baseline_x2/model/model_best.pt'  # model path
-    # args.pre_train = "C:\\s02p31c101\\Back\\AI\\experiment\\edsr_baseline_x2\\model\\model_best.pt"
     args.pre_train = ai_directory_path
     args.precision = 'single'
     args.print_every = 100
@@ -245,4 +243,4 @@ def set_setting_value_edsr(images, root_path, ai_directory_path, use_cpu=False):
 
     # 테스트를 위해 아래의 코드를 이용할 수 있다.
     # args.image_name_list = ["0894x2.png", "0920x2.png"]
-    # args.dir_demo = "C:\\s02p31c101\\Back\\AI\\edsr_library\\test"
+    # args.dir_demo = "PATH"
