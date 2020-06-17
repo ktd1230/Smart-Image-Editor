@@ -24,7 +24,7 @@ parser.add_argument('--dir_data', type=str, default='../dataset',
                     help='dataset directory')
 parser.add_argument('--dir_demo',
                     type=str,
-                    default=(Path(__file__).parent.absolute() / "..\\..\\Django\\media").resolve().__str__(),
+                    default=(Path(__file__).parent.absolute() / "../../Django/media").resolve().__str__(),
                     help='demo image directory')
 parser.add_argument('--data_train', type=str, default='DIV2K',
                     help='train dataset name')
@@ -240,7 +240,3 @@ def set_setting_value_edsr(images, root_path, ai_directory_path, use_cpu=False):
 
     print("args.image_name_list:{}".format(args.image_name_list))
     print("args.dir_demo:{}".format(args.dir_demo))
-
-    # 테스트를 위해 아래의 코드를 이용할 수 있다.
-    # args.image_name_list = ["0894x2.png", "0920x2.png"]
-    # args.dir_demo = "PATH"

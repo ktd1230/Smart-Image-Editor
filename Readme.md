@@ -1,13 +1,47 @@
-## DJango 설정
+# Smart Image Editor
+
+Smart Image Editor(스마트 이미지 편집기)는 이미지 품질을 향상하고 이미지를 원하는대로 수정하는데 초점을 맞춘 인공지능 기반 서비스입니다.
+
+1. 객체 탐지 및 제거(Mask R-CNN)
+2. 제거된 영역 복구 (Inpainting)
+   https://en.wikipedia.org/wiki/Inpainting
+3. 업스케일링 (Super Resolution)
+   https://en.wikipedia.org/wiki/Super-resolution_imaging
+
+## 객체 탐지 및 제거
+
+![mask_rcnn](./img/mask_rcnn.JPG)
+
+## 제거된 영역 복구
+
+![inpainting](./img/inpainting.JPG)
+
+## 업스케일링
+
+![super-resolution](./img/sr.JPG)
+
+### 업스케일링 결과물 비교
+
+#### 적용 전
+
+![ps](./img/sample.png)
+
+---
+
+#### 적용 후
+
+![sr](./img/sample_SR.png)
+
+# Django 설정
 
 1. visual code로 S02P31C101를 OPEN한다
-2. ctrl + <shift> + p 를 눌러 명령 팔레트를  연다
+2. ctrl + shift + p 를 눌러 명령 팔레트를  연다
 3. 명령 팔레트에 Python:Select interpreter를 입력하여  AI를 작업했던 가상환경의 interpreter를 선택한다
    1. ex) conda의 가상환경 이름이 pytorch_env라면
    2. Anaconda3/envs/pytorch_env/python.exe를 interpreter로 설정한다
    3. Python:Select Interpreter가 나오지 않으면 검색을 해서.... 해결하도록
 4. 설정이 끝났으면 visual code의 terminal을 git bash가 아닌 cmd로 설정한다
-5. 아래에 따라 입력한다.
+5. 아래의 명령어를 입력한다.
 
 ```bash
 # Windows 10 개발환경 기준입니다. 배포(Linux)환경에서는 추가적인 작업이 필요할 수 있습니다.
@@ -23,7 +57,7 @@ $ pip install -r requirements.txt
 $ python manage.py makemigrations
 $ python manage.py migrate
 
-# django 실행
+# Django 실행
 $ python manage.py runserver  
 ```
 
@@ -49,7 +83,7 @@ $ apt-get install -y libsm6 libxext6 libxrender-dev
 $ pip install opencv-python
 ```
 
-#  Vue 설정
+# Vue 설정
 
 1. 먼저 node js를 설치한 적이 없다면 node.js를 먼저 설치한다
 
@@ -62,7 +96,7 @@ $ pip install opencv-python
    $ npm run serve
    ```
 
-## AI SERVICE
+# AI SERVICE
 
 1. S02P31C101/Back/Django/main/views.py에 가면 다음 함수들이 있음.
    1. mask_rcnn
@@ -75,7 +109,7 @@ $ pip install opencv-python
    2. 기타 등등이 있을 듯
    3. 특화 프로젝트 때는 pip install . 을 통해 AI 패키지 자체를 빌드해서 해결했다
 
-# REQUIRED
+# Requirement
 
 + mask-rcnn training
   + pycocotools

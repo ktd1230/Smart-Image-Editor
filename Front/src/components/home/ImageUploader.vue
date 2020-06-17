@@ -11,8 +11,6 @@
                 <label class="ml-8" for="file">Select a file</label>
                 <button @click="upload(typeId);">Upload</button>
             </div>
-            <!-- <blog-post v-bind:comment-ids="post.commentIds"></blog-post> -->
-            <!-- <testbook :submittedFname="submittedFname" :submittedLname="submittedLname" ></testbook> -->
         </div>
 
 
