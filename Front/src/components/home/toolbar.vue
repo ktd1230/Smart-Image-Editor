@@ -15,21 +15,6 @@
             @click="switchPage('home')"
           />
           
-          <!-- <v-btn
-            v-for="(link, i) in links"
-            :key="i"
-            :to="link.to"
-            class="ml-0 hidden-sm-and-down"
-            flat
-            @click="onClick($event, item)"
-          >
-            {{ link.text }}
-          </v-btn> -->
-          <!-- <v-btn text @click="switchPage('home')">Home</v-btn> -->
-          <!-- <v-btn style="color:white;" text v-if="isAuthenticated" @click="switchPage('mybook')">Mybook</v-btn> -->
-          <!-- <v-btn style="color:white;" text @click="switchPage('result')">result</v-btn> -->          
-          <!-- <v-btn  class="ml-0 hidden-sm-and-down" text>test</v-btn> -->
-          <!-- <v-btn  class="ml-0 hidden-sm-and-down" text>test</v-btn> -->
           <v-spacer />
           
           <div v-if="isAuthenticated">
