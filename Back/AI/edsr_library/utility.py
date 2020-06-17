@@ -147,7 +147,6 @@ class checkpoint():
     def save_results(self, dataset, filename, save_list, scale, filename_list):
         if self.args.save_results:
             filename = self.get_path(
-                # 'results-{}'.format(dataset.dataset.name),
                 '{}_x{}_'.format(filename, scale)
             )
 
@@ -234,4 +233,3 @@ def make_optimizer(args, target):
     optimizer = CustomOptimizer(trainable, **kwargs_optimizer)
     optimizer._register_scheduler(scheduler_class, **kwargs_scheduler)
     return optimizer
-

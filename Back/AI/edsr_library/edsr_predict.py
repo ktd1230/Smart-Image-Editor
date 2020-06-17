@@ -1,9 +1,4 @@
 import torch
-# import config
-
-import sys
-import torch
-
 import utility
 import data
 import model
@@ -11,8 +6,6 @@ import loss
 from option import args
 from option import set_setting_value_edsr
 from trainer import Trainer
-import timeit
-
 from PIL import Image
 import numpy as np
 from math import floor
@@ -25,7 +18,7 @@ def png_alpha_channel_remove(image_name, root_path):
     :param root_path: image가 저장된 디렉토리
     :return: 별도의 반환 데이터는 존재하지 않으나 open된 파일이 32-bit PNG파일이라면 24-bit PNG파일로 변환하여 저장한다.
     """
-    image_full_path = root_path + "\\"
+    image_full_path = root_path + "/"
     # print("image_full_path: {}".format(image_full_path))
     img = Image.open(image_full_path + image_name)
     image_array = np.array(img)
@@ -47,7 +40,7 @@ def downscale_by_ratio(image_name, root_path, ratio, method=Image.BICUBIC):
     """
     if ratio == 1:
         return
-    image_full_path = root_path + "\\"
+    image_full_path = root_path + "/"
     img = Image.open(image_full_path + image_name)
     width, height = img.size
     width, height = floor(width / ratio), floor(height / ratio)
@@ -79,7 +72,7 @@ def predict(images="", root_path="", ai_directory_path="", model_type="EDSR"):
 
             # for file_name in result 형태의 for문 형태는 result의 str원소를 변경할 수 없다.
             for i in range(len(result)):
-                result[i] = result[i][result[i].rfind("\\") + 1:]
+                result[i] = result[i][result[i].rfind("/") + 1:]
             return result  # `media` 디렉토리 내부에 존재하는 결과물 파일 이름을 반환
 
             # # result 값이 변경되지 말아야 하는 경우 아래의 코드를 대신 사용한다.
