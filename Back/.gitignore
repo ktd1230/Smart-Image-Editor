@@ -3,3 +3,4 @@ dist/
 malaton.egg-info/
 #ide setting
 .idea/
+.vscode/
