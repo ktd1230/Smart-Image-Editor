@@ -4,17 +4,6 @@
       <v-row>
         <v-col md="6" xs="12" sm="12" class="pa-0">
           <v-img :src="`${back_server}:8000/media/${original_image}`" height="600"></v-img>
-          <!-- <v-carousel
-          height="600"
-          >
-            <v-carousel-item
-              v-for="(image,i) in display_images"
-              :key="i"
-              :src="`${back_server}:8000/media/${image}`"
-              reverse-transition="fade-transition"
-              transition="fade-transition"
-            ></v-carousel-item>
-          </v-carousel>-->
         </v-col>
         <v-col md="6" xs="12" sm="12">
           <v-container
@@ -49,43 +38,6 @@
                     </v-hover>
                   
                 </v-col>
-                <!-- <v-col cols="12" v-if="selectedImage >= 0">
-                    <v-card class="sampletext" max-width = 95%
-                    data-aos="fade-down"
-                    data-aos-duration="3000"
-                    data-aos-delay="150"
-                    >
-                        <v-card-title>
-                            <v-col cols="5">
-                                <v-text-field 
-                                single-line
-                                :disabled="!enabled"
-                                v-model="title"
-                                >
-                                <template v-slot:label >
-                                <strong>{{selectedImage+1}}번</strong> 샘플
-                                </template>    
-                                </v-text-field>
-                            </v-col>
-                        </v-card-title>
-                        <v-card-text class="text--primary">
-                        <v-textarea
-                        filled
-                        auto-grow
-                        rows="2"
-                        row-height="20"
-                        :value="items.text[selectedImage]"
-                        :disabled="!enabled"
-                        v-model="content"
-                        ></v-textarea>
-                        <v-col align="end">
-                        <v-btn @click="back">이전으로</v-btn>
-                        <v-btn color="#ff5989" dark @click="enabled=!enabled">수정하기</v-btn>
-                        <v-btn color="#4CAF50" dark @click="save">저장하기</v-btn>
-                        </v-col>
-                        </v-card-text>
-                    </v-card>
-              </v-col>-->
             </v-row>
           </v-container>
         </v-col>

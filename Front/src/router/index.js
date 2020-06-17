@@ -6,8 +6,6 @@ import Result from '../components/book/result';
 import Rank from '../components/home/rank';
 import Detail from '../components/home/detail';
 import Test from '../components/test/test'
-// import bus from '../utiles/bus.js';
-// import {store} from '../store/index.js';
 
 Vue.use(VueRouter)
 
@@ -29,13 +27,6 @@ export default new VueRouter({
     name: 'result',
     component: Result,
     props: true,
-    // beforeEnter: (to, from, next) => {
-    //   bus.$emit('start:spinner')
-    //     .then(() => {
-    //       next();
-    //     })
-    //     .catch((error) => console.log(error));
-    // }
   },
   {
     path: '/rank',
@@ -55,9 +46,3 @@ export default new VueRouter({
   }
 ]
 })
-
-// const router = new VueRouter({
-//   routes
-// })
-
-// export default router
