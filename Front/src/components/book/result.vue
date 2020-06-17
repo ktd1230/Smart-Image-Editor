@@ -162,12 +162,6 @@ export default {
         .catch(error => console.log(error));
     },
     resolution_up_edsr() {
-      let img = new Image();
-      img.src = `${this.back_server}:8000/media/${this.original_image}`
-      if(img.width >= 960 || img.height >=960){
-        window.alert("이미지 가로는 480px 이하이여야 합니다.")
-        return
-      }        
       bus.$emit("start:loading");
       axios_common
         .post(
@@ -186,6 +180,12 @@ export default {
         .catch(error => console.log(error));
     },
     resolution_up_prsr() {
+      let img = new Image();
+      img.src = `${this.back_server}:8000/media/${this.original_image}`
+      if(img.width >= 960 || img.height >=960){
+        window.alert("이미지 가로는 960px 이하이여야 합니다.")
+        return
+      }
       bus.$emit("start:loading");
       axios_common
         .post(
