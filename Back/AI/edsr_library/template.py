@@ -16,7 +16,6 @@ def set_template(args):
         args.model = 'MDSR'
         args.patch_size = 48
         args.epochs = 650
-        # args.epochs = 6
 
     if args.template.find('DDBPN') >= 0:
         args.model = 'DDBPN'

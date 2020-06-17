@@ -4,17 +4,6 @@
       <v-row>
         <v-col md="6" xs="12" sm="12" class="pa-0">
           <v-img :src="`${back_server}:8000/media/${original_image}`"></v-img>
-          <!-- <v-carousel
-          height="600"
-          >
-            <v-carousel-item
-              v-for="(image,i) in display_images"
-              :key="i"
-              :src="`${back_server}:8000/media/${image}`"
-              reverse-transition="fade-transition"
-              transition="fade-transition"
-            ></v-carousel-item>
-          </v-carousel>-->
         </v-col>
         <v-col md="6" xs="12" sm="12">
           <v-container
@@ -39,7 +28,6 @@
                                         <v-btn @click="save_mask(i)">저장하기</v-btn>
                                     </v-overlay>
                                     <v-overlay v-if="selected[i]" absolute="absolute" color="#036358">
-                                        <!-- <v-btn @click="select(i)">선택하기</v-btn> -->
                                         
                                     </v-overlay>
                                 <!-- </v-fade-transition> -->
@@ -48,43 +36,6 @@
                     </v-hover>
                   
                 </v-col>
-                <!-- <v-col cols="12" v-if="selectedImage >= 0">
-                    <v-card class="sampletext" max-width = 95%
-                    data-aos="fade-down"
-                    data-aos-duration="3000"
-                    data-aos-delay="150"
-                    >
-                        <v-card-title>
-                            <v-col cols="5">
-                                <v-text-field 
-                                single-line
-                                :disabled="!enabled"
-                                v-model="title"
-                                >
-                                <template v-slot:label >
-                                <strong>{{selectedImage+1}}번</strong> 샘플
-                                </template>    
-                                </v-text-field>
-                            </v-col>
-                        </v-card-title>
-                        <v-card-text class="text--primary">
-                        <v-textarea
-                        filled
-                        auto-grow
-                        rows="2"
-                        row-height="20"
-                        :value="items.text[selectedImage]"
-                        :disabled="!enabled"
-                        v-model="content"
-                        ></v-textarea>
-                        <v-col align="end">
-                        <v-btn @click="back">이전으로</v-btn>
-                        <v-btn color="#ff5989" dark @click="enabled=!enabled">수정하기</v-btn>
-                        <v-btn color="#4CAF50" dark @click="save">저장하기</v-btn>
-                        </v-col>
-                        </v-card-text>
-                    </v-card>
-              </v-col>-->
             </v-row>
           </v-container>
         </v-col>
@@ -113,7 +64,6 @@
 
 
 <script>
-//import router from "../../router"
 import axios_common from "../../axios_common";
 import { mapGetters } from "vuex";
 import axios from "axios";
@@ -125,13 +75,9 @@ export default {
     ...mapGetters(["isAuthenticated", "requestHeader", "userId", "username"])
   },
   mounted() {
-    // console.log(this.$vuetify.breakpoint)
-    // bus.$emit('end:spinner');
     console.log("original_image", this.original_image);
   },
   created() {
-    // console.log(this.$route.response)
-    // console.log("result창")
     console.log(this.response);
     this.back_server = "http://k02c1011.p.ssafy.io"
     //this.back_server = "http://localhost";
@@ -161,7 +107,6 @@ export default {
         this.selected[num] = true
       console.log("event.target", event.target);
       this.selectedImage = num;
-      //this.display_images[0]=this.masked_images[this.selectedImage]
       console.log(
         "In select funtion display_images[0]",
         this.display_images[0]
@@ -233,7 +178,6 @@ export default {
         .then(response => {
           console.log("resolution", response.data.resolution_up);
           this.display_images = response.data.resolution_up[0];
-          //this.display_images.push(response.data.resolution_up[0])
           console.log("this.display_images[0]", this.display_images[0]);
           console.log("this.display_images", this.display_images);
           this.dialog = true;
@@ -251,7 +195,6 @@ export default {
         )
         .then(response => {
           console.log("resolution", response.data.resolution_up);
-          //this.display_images.push(response.data.resolution_up);
           this.display_images = response.data.resolution_up;
           console.log("this.display_images", this.display_images);
           this.dialog = true;
@@ -278,7 +221,6 @@ export default {
         .then(response => {
           console.log("inpainting", response.data);
           this.display_images = response.data.inpainting;
-          //this.display_images.push(response.data.inpainting)
           this.dialog = true;
           bus.$emit("end:loading");
         })
