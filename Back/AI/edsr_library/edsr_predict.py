@@ -72,7 +72,10 @@ def predict(images="", root_path="", ai_directory_path="", model_type="EDSR"):
 
             # for file_name in result 형태의 for문 형태는 result의 str원소를 변경할 수 없다.
             for i in range(len(result)):
-                result[i] = result[i][result[i].rfind("/") + 1:]
+                pos = result[i].rfind("/")
+                if pos == -1:
+                    pos = result[i].rfind("\\")
+                result[i] = result[i][pos + 1:]
             return result  # `media` 디렉토리 내부에 존재하는 결과물 파일 이름을 반환
 
             # # result 값이 변경되지 말아야 하는 경우 아래의 코드를 대신 사용한다.
