@@ -158,7 +158,7 @@ $ sudo ln -s /etc/nginx/sites-available/project-3 /etc/nginx/sites-enabled/proje
 $ sudo vim /etc/nginx/sites-available/project-3
 ```
 
-```text
+```nginx
 # /etc/nginx/site-avaliable/project-3 파일 내용
 
 # the upstream component nginx needs to connect to
@@ -194,4 +194,24 @@ $ sudo service nginx start
 $ cd 프로젝트_경로
 (이동 후 s02p31c101/Back/Django 위치가 되어야 합니다.)
 $ nohup uwsgi --http :8000 --wsgi-file /home/ubuntu/deploy/s02p31c101/Back/Django/sub3/wsgi.py >/dev/null 2>&1 &
+```
+
+# AWS (Linux) conda 가상 환경 설정
+
+AWS 구동에 이용된 가상환경 설정 파일입니다.
+
+아래의 명령어를 이용하여 yaml 파일 형태로 추출했습니다.
+
+```bash
+$ conda env export -n release-1.0.0_uwsgi --file release-1.0.0_uwsgi.yaml
+```
+
+추출된 파일은 다음 위치에 있습니다. `s02p31c101/release_env_setting/release-1.0.0_uwsgi.yaml`
+
+이 파일을 이용하여 가상환경을 생성하면, 가상환경 생성과 패키지 설치 파일 작업이 동시에 이루어집니다.
+
+```bash
+release_env_setting 위치에서 명령어 실행
+$ conda env create -n release-1.0.0_uwsgi --file release-1.0.0_uwsgi.yaml
+$ conda activate release-1.0.0_uwsgi
 ```
