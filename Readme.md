@@ -196,7 +196,21 @@ $ cd 프로젝트_경로
 $ nohup uwsgi --http :8000 --wsgi-file /home/ubuntu/deploy/s02p31c101/Back/Django/sub3/wsgi.py >/dev/null 2>&1 &
 ```
 
-# AWS (Linux) conda 가상 환경 설정
+# 개발환경 conda 가상 환경 설정 (Windows 10)
+
+개발에 이용된 가상환경 설정 파일입니다.
+
+추출된 파일은 다음 위치에 있습니다. `s02p31c101/env_setting_dev/pytorch_env.yaml`
+
+이 파일을 이용하여 가상환경을 생성하면, 가상환경 생성과 패키지 설치 파일 작업이 동시에 이루어집니다.
+
+```bash
+env_setting_dev 위치에서 명령어 실행
+$ conda env create -n pytorch_env --file pytorch_env.yaml
+$ conda activate pytorch_env
+```
+
+# AWS (Linux) 배포 conda 가상 환경 설정
 
 AWS 구동에 이용된 가상환경 설정 파일입니다.
 
@@ -206,12 +220,12 @@ AWS 구동에 이용된 가상환경 설정 파일입니다.
 $ conda env export -n release-1.0.0_uwsgi --file release-1.0.0_uwsgi.yaml
 ```
 
-추출된 파일은 다음 위치에 있습니다. `s02p31c101/release_env_setting/release-1.0.0_uwsgi.yaml`
+추출된 파일은 다음 위치에 있습니다. `s02p31c101/env_setting_release/release-1.0.0_uwsgi.yaml`
 
 이 파일을 이용하여 가상환경을 생성하면, 가상환경 생성과 패키지 설치 파일 작업이 동시에 이루어집니다.
 
 ```bash
-release_env_setting 위치에서 명령어 실행
+env_setting_release 위치에서 명령어 실행
 $ conda env create -n release-1.0.0_uwsgi --file release-1.0.0_uwsgi.yaml
 $ conda activate release-1.0.0_uwsgi
 ```
