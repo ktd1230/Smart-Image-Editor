@@ -145,3 +145,87 @@ $ pip install opencv-python
     변수 이름 : PYTHONPATH
     변수   값 : s02p31c101\Back\AI\prosr_library\lib
     ```
+
+# NGINX 설정
+
+NGINX 설치 후 `/etc/nginx/site-avaliable/site-avaliable` 위치에 아래 파일을 작성한다.
+
+이때의 파일 이름은 `project-3`으로 명명되었다.
+
+```bash
+$ sudo touch /etc/nginx/sites-available/project-3
+$ sudo ln -s /etc/nginx/sites-available/project-3 /etc/nginx/sites-enabled/project-3
+$ sudo vim /etc/nginx/sites-available/project-3
+```
+
+```nginx
+# /etc/nginx/site-avaliable/project-3 파일 내용
+
+# the upstream component nginx needs to connect to
+upstream django {
+    server 127.0.0.1:8001; # for a web port socket (we'll use this first)
+}
+
+server {
+    listen      80;
+    server_name k02c1011.p.ssafy.io;
+    charset utf-8;
+    root    /home/ubuntu/deploy/s02p31c101/Front/dist;  # Frontend build 결과물 위치
+    index   index.html index.htm;
+    # Always serve index.html for any request
+    location / {
+        root /home/ubuntu/deploy/s02p31c101/Front/dist;  # Frontend build 결과물 위치
+        try_files $uri /index.html;
+    }
+    error_log  /var/log/nginx/project-3-error.log;
+    access_log /var/log/nginx/project-3-access.log;
+}
+
+# original source file chmod : -rw-r--r--
+```
+
+```bash
+$ sudo service nginx start
+```
+
+# uWSGI
+
+```bash
+$ cd 프로젝트_경로
+(이동 후 s02p31c101/Back/Django 위치가 되어야 합니다.)
+$ nohup uwsgi --http :8000 --wsgi-file /home/ubuntu/deploy/s02p31c101/Back/Django/sub3/wsgi.py >/dev/null 2>&1 &
+```
+
+# 개발환경 conda 가상 환경 설정 (Windows 10)
+
+개발에 이용된 가상환경 설정 파일입니다.
+
+추출된 파일은 다음 위치에 있습니다. `s02p31c101/env_setting_dev/pytorch_env.yaml`
+
+이 파일을 이용하여 가상환경을 생성하면, 가상환경 생성과 패키지 설치 파일 작업이 동시에 이루어집니다.
+
+```bash
+env_setting_dev 위치에서 명령어 실행
+$ conda env create -n pytorch_env --file pytorch_env.yaml
+$ conda activate pytorch_env
+```
+
+# AWS (Linux) 배포 conda 가상 환경 설정
+
+AWS 구동에 이용된 가상환경 설정 파일입니다.
+
+아래의 명령어를 이용하여 yaml 파일 형태로 추출했습니다.
+
+```bash
+$ conda env export -n release-1.0.0_uwsgi --file release-1.0.0_uwsgi.yaml
+```
+
+추출된 파일은 다음 위치에 있습니다. `s02p31c101/env_setting_release/release-1.0.0_uwsgi.yaml`
+
+이 파일을 이용하여 가상환경을 생성하면, 가상환경 생성과 패키지 설치 파일 작업이 동시에 이루어집니다.
+
+```bash
+env_setting_release 위치에서 명령어 실행
+$ conda env create -n release-1.0.0_uwsgi --file release-1.0.0_uwsgi.yaml
+$ conda activate release-1.0.0_uwsgi
+```
